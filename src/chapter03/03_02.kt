@@ -5,16 +5,17 @@ package chapter03
     returns the minimum element? Push, pop and min should all operate in O(1) time.
  */
 
+// using 2 stacks
 class StackWithMin<T : Comparable<T>> {
-    val stack = Stack<T>()
-    val stackMin = Stack<T>()
+    private val stack = Stack<T>()
+    private val stackMin = Stack<T>()
 
     fun empty() = stack.empty()
 
-    fun push(key: T) {
-        stack.push(key)
-        if (stackMin.empty() || key < stackMin.top() as T) {
-            stackMin.push(key)
+    fun push(item: T) {
+        stack.push(item)
+        if (stackMin.empty() || item < stackMin.top() as T) {
+            stackMin.push(item)
         }
     }
 
@@ -30,4 +31,57 @@ class StackWithMin<T : Comparable<T>> {
     }
 
     fun min() = stackMin.top()
+}
+
+// using 1 stack where each element keeps track of the min
+class StackWithMinV2<T : Comparable<T>> {
+    private val stack = Stack<Pair<T, T>>()
+
+    fun empty() = stack.empty()
+
+    fun top() = stack.top()?.first
+
+    fun pop() = stack.pop()?.first
+
+    fun push(item: T) {
+        val prevMin = stack.top()?.second
+        val newMin = if (prevMin == null || item < prevMin) item else prevMin
+        stack.push(item to newMin)
+    }
+
+    fun min() = stack.top()?.second
+}
+
+// test
+fun main() {
+    val stack = StackWithMinV2<Int>().apply {
+        push(12)
+        println(min())
+        push(24)
+        println(min())
+        push(7)
+        println(min())
+        push(8)
+        println(min())
+        push(1)
+        println(min())
+        println()
+
+        println(top())
+        pop()
+        println(min())
+        println(top())
+        pop()
+        println(min())
+        println(top())
+        pop()
+        println(min())
+        println(top())
+        pop()
+        println(min())
+        println(top())
+        pop()
+        println(min())
+        println(empty())
+    }
 }
