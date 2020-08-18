@@ -7,10 +7,6 @@ import kotlin.math.min
     4.1 Implement a function to check if a tree is balanced. For the purposes of this question, a balanced tree is
     defined to be a tree such that no two leaf nodes differ in distance from the root by more than one.
  */
-data class Node(val data: Int) {
-    var left: Node? = null
-    var right: Node? = null
-}
 
 // this is equal to the height algorithm
 fun maxDepth(tree: Node?): Int {
