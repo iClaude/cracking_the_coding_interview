@@ -1,43 +1,46 @@
 package leetcode
 
 fun main() {
-    val list = ListNode(7)
+    val list = ListNode(1).apply {
+        next = ListNode(2).apply {
+            next = ListNode(3).apply {
+                next = ListNode(4)
+            }
+        }
+    }
 
-    println("middle node: ${Solution().middleNode(list)?.`val`}")
+    val newList = Solution().swapPairs(list)
+    printList(newList)
+
 }
 
 class Solution {
+    fun swapPairs(head: ListNode?): ListNode? {
+        head?.next ?: return head
 
-    // 1 scan of the list with 2 pointers: one slow and one fast
-    fun middleNode(head: ListNode?): ListNode? {
-        var p1 = head?.next
-        var p2 = head?.next?.next
-
-        while (p2?.next != null) {
-            p1 = p1?.next
-            p2 = p2.next?.next
-        }
-
-        return p1
-    }
-
-    // 2 scans of the list
-    /*fun middleNode(head: ListNode?): ListNode? {
+        val newHead = head.next
         var p = head
-        var count = 0
-        while (p != null) {
-            count++
-            p = p.next
+        var prev: ListNode? = null
+
+        while (p?.next != null) {
+            val nextPair = p.next?.next
+
+            p.next?.next = p
+            p.next = nextPair
+
+            p = nextPair
         }
 
-        count /= 2
-        p = head
-        repeat(count) {
-            p = p?.next
-        }
+        return newHead
+    }
+}
 
-        return p
-    }*/
+fun printList(head: ListNode?) {
+    var p = head
+    while (p != null) {
+        print("${p.`val`} - ")
+        p = p.next
+    }
 }
 
 class ListNode(var `val`: Int) {
