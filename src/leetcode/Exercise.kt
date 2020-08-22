@@ -1,48 +1,28 @@
 package leetcode
 
 fun main() {
-    val list = ListNode(1).apply {
-        next = ListNode(2).apply {
-            next = ListNode(3).apply {
-                next = ListNode(4)
-            }
-        }
-    }
+    val arr = charArrayOf('a', 'b', 'c', 'd', '\u0000')
+    println("original array: ${arr.contentToString()}")
 
-    val newList = Solution().swapPairs(list)
-    printList(newList)
-
+    reverseArray(arr)
+    println("reversed array: ${arr.contentToString()}")
 }
 
-class Solution {
-    fun swapPairs(head: ListNode?): ListNode? {
-        head?.next ?: return head
-
-        val newHead = head.next
-        var p = head
-        var prev: ListNode? = null
-
-        while (p?.next != null) {
-            val nextPair = p.next?.next
-
-            p.next?.next = p
-            p.next = nextPair
-
-            p = nextPair
-        }
-
-        return newHead
+private fun reverseArray(arr: CharArray) {
+    for (i in 0 until arr.size / 2) {
+        swap(arr, i, arr.size - 2 - i)
     }
 }
 
-fun printList(head: ListNode?) {
-    var p = head
-    while (p != null) {
-        print("${p.`val`} - ")
-        p = p.next
-    }
+private fun reverseArrayRecursive(arr: CharArray, i1: Int) {
+    if (i1 == arr.size / 2) return
+
+    swap(arr, i1, arr.size - 2 - i1)
+    reverseArrayRecursive(arr, i1 + 1)
 }
 
-class ListNode(var `val`: Int) {
-    var next: ListNode? = null
+private fun swap(arr: CharArray, i1: Int, i2: Int) {
+    val tmp = arr[i1]
+    arr[i1] = arr[i2]
+    arr[i2] = tmp
 }
