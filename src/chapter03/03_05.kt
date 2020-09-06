@@ -28,7 +28,7 @@ class MyQueue<T> {
     }
 }
 
-// This classes uses the Java Stack class (which throws exceptions if the stack is empty).
+// this classes uses the Java Stack class (which throws exceptions if the stack is empty)
 class MyQueueB<T> {
     private val stackEnqueue = java.util.Stack<T>()
     private val stackDequeue = java.util.Stack<T>()
