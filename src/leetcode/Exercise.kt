@@ -1,32 +1,39 @@
 package leetcode
 
-import java.util.*
-import kotlin.math.abs
+fun sumListsRecursive(list1: ListNode?, list2: ListNode?, rem: Int): ListNode? {
+    val sum = ((list1?.value ?: 0) + (list2?.value ?: 0) + rem)
 
-class Solution {
-    fun makeGood(s: String): String {
-        val stack = Stack<Char>()
-        s.forEach {
-            if (stack.empty() || !badCharacters(it, stack.peek())) {
-                stack.push(it)
-            } else {
-                stack.pop()
-            }
+    return if (list1 == null && list2 == null && rem == 1) {
+        ListNode(1)
+    } else if (list1 == null && list2 == null && rem == 0) {
+        null
+    } else {
+        ListNode(sum.rem(10)).apply {
+            next = sumListsRecursive(list1?.next, list2?.next, if (sum >= 10) 1 else 0)
         }
-
-        val result = StringBuilder()
-        while (!stack.empty()) {
-            result.append(stack.pop())
-        }
-        return result.reverse().toString()
     }
+}
 
-    private fun badCharacters(a: Char, b: Char) =
-            abs(a.toInt() - b.toInt()) == 32
+data class ListNode(val value: Int) {
+    var next: ListNode? = null
 }
 
 fun main() {
-    val str = "s"
+    val list1 = ListNode(3).apply {
+        next = ListNode(1).apply {
+            next = ListNode(5)
+        }
+    }
+    val list2 = ListNode(5).apply {
+        next = ListNode(9).apply {
+            next = ListNode(2)
+        }
+    }
 
-    println(Solution().makeGood(str))
+    var result = sumListsRecursive(list1, list2, 0)
+    while (result != null) {
+        print("${result.value}")
+        result = result.next
+    }
+
 }
