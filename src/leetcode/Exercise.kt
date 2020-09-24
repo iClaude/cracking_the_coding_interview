@@ -1,39 +1,30 @@
 package leetcode
 
-fun sumListsRecursive(list1: ListNode?, list2: ListNode?, rem: Int): ListNode? {
-    val sum = ((list1?.value ?: 0) + (list2?.value ?: 0) + rem)
-
-    return if (list1 == null && list2 == null && rem == 1) {
-        ListNode(1)
-    } else if (list1 == null && list2 == null && rem == 0) {
-        null
-    } else {
-        ListNode(sum.rem(10)).apply {
-            next = sumListsRecursive(list1?.next, list2?.next, if (sum >= 10) 1 else 0)
-        }
-    }
-}
-
-data class ListNode(val value: Int) {
-    var next: ListNode? = null
-}
-
 fun main() {
-    val list1 = ListNode(3).apply {
-        next = ListNode(1).apply {
-            next = ListNode(5)
+    val arr = intArrayOf(4, 7, 9, 11)
+    println(Solution().findKthPositive(arr, 10))
+}
+
+class Solution {
+    fun findKthPositive(arr: IntArray, k: Int): Int {
+        var incr = 0
+        var posArray = 0
+        var i = 1
+
+        while (incr < k) {
+            if (isElementPresent(i, arr, posArray)) {
+                posArray++
+            } else {
+                incr++
+            }
+            i++
         }
-    }
-    val list2 = ListNode(5).apply {
-        next = ListNode(9).apply {
-            next = ListNode(2)
-        }
+
+        return i - 1
     }
 
-    var result = sumListsRecursive(list1, list2, 0)
-    while (result != null) {
-        print("${result.value}")
-        result = result.next
+    private fun isElementPresent(value: Int, arr: IntArray, posArray: Int): Boolean {
+        if (posArray !in arr.indices) return false
+        return value == arr[posArray]
     }
-
 }
