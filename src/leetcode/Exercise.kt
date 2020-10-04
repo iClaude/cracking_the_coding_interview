@@ -1,30 +1,37 @@
 package leetcode
 
 fun main() {
-    val arr = intArrayOf(4, 7, 9, 11)
-    println(Solution().findKthPositive(arr, 10))
+    val list = ListNode(1).apply {
+        next = ListNode(4).apply {
+            next = ListNode(5).apply {
+                next = ListNode(66).apply {
+                    next = ListNode(7).apply {
+                        next = ListNode(10)
+                    }
+                }
+            }
+        }
+    }
+
+    println(findNToLast(list, 3)?.value)
 }
 
-class Solution {
-    fun findKthPositive(arr: IntArray, k: Int): Int {
-        var incr = 0
-        var posArray = 0
-        var i = 1
+class ListNode(val value: Int) {
+    var next: ListNode? = null
+}
 
-        while (incr < k) {
-            if (isElementPresent(i, arr, posArray)) {
-                posArray++
-            } else {
-                incr++
-            }
-            i++
-        }
-
-        return i - 1
+fun findNToLast(list: ListNode, n: Int): ListNode? {
+    var p1: ListNode? = list
+    var p2: ListNode? = list
+    for (i in 1..n) {
+        p2 = p2?.next
+        p2 ?: return null
     }
 
-    private fun isElementPresent(value: Int, arr: IntArray, posArray: Int): Boolean {
-        if (posArray !in arr.indices) return false
-        return value == arr[posArray]
+    while (p2?.next != null) {
+        p2 = p2.next
+        p1 = p1!!.next
     }
+
+    return p1
 }

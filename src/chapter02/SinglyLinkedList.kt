@@ -215,14 +215,14 @@ class SinglyLinkedList<T> {
             : Node<T>? {
 
         var p1 = list.head
-        repeat(n) {
+        for (i in 1..n) {
             p1 = p1?.next
+            p1 ?: return null
         }
-        if (p1 == null) return null
 
         var p2 = list.head
         while (p1!!.next != null) {
-            p1 = p1!!.next
+            p1 = p1.next
             p2 = p2!!.next
         }
 
