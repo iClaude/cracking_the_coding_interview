@@ -221,7 +221,8 @@ class SinglyLinkedList<T> {
         }
 
         var p2 = list.head
-        while (p1!!.next != null) {
+        while (p1!!
+                        .next != null) {
             p1 = p1.next
             p2 = p2!!.next
         }

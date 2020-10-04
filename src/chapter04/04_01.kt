@@ -19,7 +19,7 @@ fun maxDepth(tree: Node?): Int {
 fun minDepth(tree: Node?): Int {
     if (tree == null) return 0
 
-    return 1 + min(maxDepth(tree.left), maxDepth(tree.right))
+    return 1 + min(minDepth(tree.left), minDepth(tree.right))
 }
 
 // test
