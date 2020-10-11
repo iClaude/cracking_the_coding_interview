@@ -5,34 +5,29 @@ import kotlin.math.min
 
 fun main() {
     val tree = Node(7).apply {
-        left = Node(6).apply {
-            left = Node(4)
-            right = Node(3).apply {
-                left = Node(88)
-            }
-        }
-        right = Node(5).apply {
-            right = Node(8)
-        }
+        left = Node(5)
     }
+
+    println("max height = ${maxHeight(tree)}")
+    println("min height = ${minHeight(tree)}")
 
     println(isBalanced(tree))
 }
 
-class Node(val value: Int) {
-    var left: Node? = null
-    var right: Node? = null
-}
-
-fun isBalanced(tree: Node?) =
-        (maxHeight(tree) - minHeight(tree)) <= 1
+fun isBalanced(tree: Node) =
+        maxHeight(tree) - minHeight(tree) <= 1
 
 fun maxHeight(tree: Node?): Int {
-    tree ?: return 0
+    if (tree == null) return 0
     return 1 + max(maxHeight(tree.left), maxHeight(tree.right))
 }
 
 fun minHeight(tree: Node?): Int {
-    tree ?: return 0
+    if (tree == null) return 0
     return 1 + min(minHeight(tree.left), minHeight(tree.right))
+}
+
+class Node(val data: Int) {
+    var left: Node? = null
+    var right: Node? = null
 }

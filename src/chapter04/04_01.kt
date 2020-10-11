@@ -24,11 +24,16 @@ fun minDepth(tree: Node?): Int {
 
 // test
 fun main() {
-    val tree = Node(5).apply {
-        left = Node(3).apply {
-            left = Node(2)
+    val tree = Node(7).apply {
+        left = Node(6).apply {
+            left = Node(4)
+            right = Node(3).apply {
+                left = Node(88)
+            }
         }
-        right = Node(8)
+        right = Node(5).apply {
+            right = Node(8)
+        }
     }
 
     println("balanced? ${maxDepth(tree) - minDepth(tree) <= 1}")
