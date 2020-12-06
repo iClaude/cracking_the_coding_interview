@@ -22,10 +22,10 @@ package chapter01
    Performance: O(n^2) */
 
 
-val letters = Array(256) { false }
+val letters = Array(256) { 0 }
 
 fun main() {
-    val myString = "claudiosn"
+    val myString = "abcdefghilmnaopqrstuvwyz"
 
     println("Characters are unique? -> ${areCharsUnique(myString)}")
     println("Characters are unique? -> ${areCharsUniqueSort(myString)}")
@@ -34,36 +34,25 @@ fun main() {
 
 fun areCharsUnique(myString: String): Boolean {
     for (character in myString) {
-        if (!letters[character.toInt()]) {
-            letters[character.toInt()] = true
-        } else {
-            return false
-        }
+        letters[character.toInt()]++
+        if (letters[character.toInt()] > 1) return false
     }
     return true
 }
 
 fun areCharsUniqueSort(myString: String): Boolean {
-    if (myString.length < 2) return true
-
-    val arr = myString.toCharArray()
-    val myStringSorted = arr.sorted().joinToString("")
-
-    for (i in 0..myStringSorted.length - 2) {
-        if (myStringSorted[i] == myStringSorted[i + 1]) return false
+    val charsOrdered = myString.toCharArray().sortedArray()
+    for (i in 1 until charsOrdered.size) {
+        if (charsOrdered[i] == charsOrdered[i - 1]) return false
     }
-
     return true
 }
 
 fun areCharsUniqueDoubleLoop(myString: String): Boolean {
-    if (myString.length < 2) return true
-
-    for (i in 0..myString.length - 2) {
-        for (j in i + 1..myString.length - 1) {
+    for (i in myString.indices) {
+        for (j in i + 1 until myString.length) {
             if (myString[i] == myString[j]) return false
         }
     }
-
     return true
 }

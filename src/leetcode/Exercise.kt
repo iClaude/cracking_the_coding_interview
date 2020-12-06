@@ -1,33 +1,32 @@
 package leetcode
 
-import kotlin.math.max
-import kotlin.math.min
-
 fun main() {
-    val tree = Node(7).apply {
-        left = Node(5)
+    val str = "ddd"
+    println("are characters unique? ${areCharsUnique3(str)}")
+}
+
+fun areCharsUnique(str: String): Boolean {
+    val arrChars = Array(255) { 0 }
+    for (char in str) {
+        arrChars[char.toInt()]++
+        if (arrChars[char.toInt()] > 1) return false
     }
-
-    println("max height = ${maxHeight(tree)}")
-    println("min height = ${minHeight(tree)}")
-
-    println(isBalanced(tree))
+    return true
 }
 
-fun isBalanced(tree: Node) =
-        maxHeight(tree) - minHeight(tree) <= 1
-
-fun maxHeight(tree: Node?): Int {
-    if (tree == null) return 0
-    return 1 + max(maxHeight(tree.left), maxHeight(tree.right))
+fun areCharsUnique2(str: String): Boolean {
+    for (i in str.indices) {
+        for (j in i + 1 until str.length) {
+            if (str[i] == str[j]) return false
+        }
+    }
+    return true
 }
 
-fun minHeight(tree: Node?): Int {
-    if (tree == null) return 0
-    return 1 + min(minHeight(tree.left), minHeight(tree.right))
-}
-
-class Node(val data: Int) {
-    var left: Node? = null
-    var right: Node? = null
+fun areCharsUnique3(str: String): Boolean {
+    val strSorted = str.toCharArray().sortedArray()
+    for (i in 1 until strSorted.size) {
+        if (strSorted[i] == strSorted[i - 1]) return false
+    }
+    return true
 }
