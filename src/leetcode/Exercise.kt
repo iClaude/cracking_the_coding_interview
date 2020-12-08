@@ -1,32 +1,19 @@
 package leetcode
 
 fun main() {
-    val str = "ddd"
-    println("are characters unique? ${areCharsUnique3(str)}")
+    val str = "abcd\u0000"
+    println("string reversed? ${reverseString(str)}")
 }
 
-fun areCharsUnique(str: String): Boolean {
-    val arrChars = Array(255) { 0 }
-    for (char in str) {
-        arrChars[char.toInt()]++
-        if (arrChars[char.toInt()] > 1) return false
+fun reverseString(str: String): String {
+    val arrChars = str.toCharArray()
+    for (i in 0 until arrChars.size / 2) {
+        val tmp = arrChars[i]
+        arrChars[i] = arrChars[arrChars.size - 2 - i]
+        arrChars[arrChars.size - 2 - i] = tmp
     }
-    return true
+    return arrChars.joinToString("") {
+        it.toString()
+    }
 }
 
-fun areCharsUnique2(str: String): Boolean {
-    for (i in str.indices) {
-        for (j in i + 1 until str.length) {
-            if (str[i] == str[j]) return false
-        }
-    }
-    return true
-}
-
-fun areCharsUnique3(str: String): Boolean {
-    val strSorted = str.toCharArray().sortedArray()
-    for (i in 1 until strSorted.size) {
-        if (strSorted[i] == strSorted[i - 1]) return false
-    }
-    return true
-}

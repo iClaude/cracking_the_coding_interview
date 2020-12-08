@@ -5,9 +5,13 @@ package chapter01
     the null character.)
  */
 
-private fun reverseArrayIterative(arr: CharArray) {
-    for (i in 0 until arr.size / 2) {
-        swap(arr, i, arr.size - 2 - i)
+private fun reverseStringIterative(str: String): String {
+    val arrChars = str.toCharArray()
+    for (i in 0 until arrChars.size / 2) {
+        swap(arrChars, i, arrChars.size - 2 - i)
+    }
+    return arrChars.joinToString("") {
+        it.toString()
     }
 }
 
@@ -27,11 +31,9 @@ private fun swap(arr: CharArray, i1: Int, i2: Int) {
 // test
 fun main() {
     // iterative
-    val arr = charArrayOf('a', 'b', 'c', 'd', '\u0000')
-    println("original array: ${arr.contentToString()}")
-
-    reverseArrayIterative(arr)
-    println("reversed array: ${arr.contentToString()}")
+    val str = "abcd\u0000"
+    println("original str: $str")
+    println("reversed string: ${reverseStringIterative(str)}")
 
     // recursive
     val arr2 = charArrayOf('a', 'b', 'c', 'd', 'e', '\u0000')
