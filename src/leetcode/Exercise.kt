@@ -1,19 +1,21 @@
 package leetcode
 
 fun main() {
-    val str = "abcd\u0000"
-    println("string reversed? ${reverseString(str)}")
+    val str = "aaabbbcccdeeeaabfffgeeah"
+    println("string without duplicateds = ${removeDuplicates(str)}")
 }
 
-fun reverseString(str: String): String {
-    val arrChars = str.toCharArray()
-    for (i in 0 until arrChars.size / 2) {
-        val tmp = arrChars[i]
-        arrChars[i] = arrChars[arrChars.size - 2 - i]
-        arrChars[arrChars.size - 2 - i] = tmp
+fun removeDuplicates(str: String): String {
+    val strResult = StringBuilder()
+    val characters = Array(256) { false }
+    for (char in str) {
+        if (!characters[char.toInt()]) {
+            characters[char.toInt()] = true
+            strResult.append(char)
+        } else {
+            continue
+        }
     }
-    return arrChars.joinToString("") {
-        it.toString()
-    }
+    return strResult.toString()
 }
 
