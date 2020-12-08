@@ -1,22 +1,28 @@
 package leetcode
 
 fun main() {
-    val str = "mamma"
-    println(str.isAnagramOf("mammo"))
+    val str = " questa è una stringa per un "
+    println(str.replaceSpacesWith("pirla"))
 }
 
-fun String.isAnagramOf(otherStr: String): Boolean {
-    if (this.length != otherStr.length) return false
-
-    val charsCount = Array(256) { 0 }
+fun String.replaceSpacesWith(otherStr: String): String {
+    var numSpaces = 0
     for (char in this) {
-        charsCount[char.toInt()]++
-    }
-    for (char in otherStr) {
-        val newValue = --charsCount[char.toInt()]
-        if (newValue < 0) return false
+        if (char == ' ') numSpaces++
     }
 
-    return true
+    val resultStr = Array(this.length + numSpaces * (otherStr.length - 1)) { ' ' }
+    var i = 0
+    for (char in this) {
+        if (char != ' ') {
+            resultStr[i++] = char
+        } else {
+            for (char2 in otherStr) {
+                resultStr[i++] = char2
+            }
+        }
+    }
+
+    return resultStr.joinToString("") { it.toString() }
 }
 

@@ -15,6 +15,7 @@ package chapter01
 fun main() {
     val str1 = " a bc  d "
     println("new string -> ${replaceSpaces(str1)}")
+    println("new string -> ${str1.replaceSpacesWith("%20")}")
 }
 
 private fun replaceSpaces(str1: String): String {
@@ -37,4 +38,26 @@ private fun replaceSpaces(str1: String): String {
     }
 
     return newStrArr.joinToString("")
+}
+
+// more general solution
+private fun String.replaceSpacesWith(otherStr: String): String {
+    var numSpaces = 0
+    for (char in this) {
+        if (char == ' ') numSpaces++
+    }
+
+    val resultStr = Array(this.length + numSpaces * (otherStr.length - 1)) { ' ' }
+    var i = 0
+    for (char in this) {
+        if (char != ' ') {
+            resultStr[i++] = char
+        } else {
+            for (char2 in otherStr) {
+                resultStr[i++] = char2
+            }
+        }
+    }
+
+    return resultStr.joinToString("") { it.toString() }
 }
