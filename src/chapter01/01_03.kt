@@ -20,7 +20,7 @@ fun main() {
     println("str without duplicates: ${removeDuplicates(str)}")
 }
 
-fun removeDuplicates(str: String): String {
+private fun removeDuplicates(str: String): String {
     val strResult = StringBuilder()
     val charsHit = Array(256) { false }
     for (char in str) {

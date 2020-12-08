@@ -32,7 +32,7 @@ fun main() {
     println("Characters are unique? -> ${areCharsUniqueDoubleLoop(myString)}")
 }
 
-fun areCharsUnique(myString: String): Boolean {
+private fun areCharsUnique(myString: String): Boolean {
     for (character in myString) {
         letters[character.toInt()]++
         if (letters[character.toInt()] > 1) return false
@@ -40,7 +40,7 @@ fun areCharsUnique(myString: String): Boolean {
     return true
 }
 
-fun areCharsUniqueSort(myString: String): Boolean {
+private fun areCharsUniqueSort(myString: String): Boolean {
     val charsOrdered = myString.toCharArray().sortedArray()
     for (i in 1 until charsOrdered.size) {
         if (charsOrdered[i] == charsOrdered[i - 1]) return false
@@ -48,7 +48,7 @@ fun areCharsUniqueSort(myString: String): Boolean {
     return true
 }
 
-fun areCharsUniqueDoubleLoop(myString: String): Boolean {
+private fun areCharsUniqueDoubleLoop(myString: String): Boolean {
     for (i in myString.indices) {
         for (j in i + 1 until myString.length) {
             if (myString[i] == myString[j]) return false

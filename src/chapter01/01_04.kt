@@ -18,24 +18,23 @@ package chapter01
    the control array becomes 0.
    Performance: O(n), where n is: string1 charaters + string2 characters. */
 
-
-
 fun main() {
     val str1 = "sarnia9"
-    val str2 = "9riyaas"
-    println("are the 2 strings anagrams? -> ${areAnagrams(str1, str2)}")
+    val str2 = "9aisarn"
+    println("are the 2 strings anagrams? -> ${str1.isAnagramOf(str2)}")
 }
 
-private fun areAnagrams(str1: String, str2: String): Boolean {
-    if (str1.length != str2.length) return false
+private fun String.isAnagramOf(otherStr: String): Boolean {
+    if (this.length != otherStr.length) return false
 
-    val checkArray = Array(256) { 0 }
-    for (char in str1) {
-        checkArray[char.toInt()]++
+    val charsCount = Array(256) { 0 }
+    for (char in this) {
+        charsCount[char.toInt()]++
     }
-    for (char in str2) {
-        checkArray[char.toInt()]--
-        if (checkArray[char.toInt()] < 0) return false
+    for (char in otherStr) {
+        val newValue = --charsCount[char.toInt()]
+        if (newValue < 0) return false
     }
+
     return true
 }

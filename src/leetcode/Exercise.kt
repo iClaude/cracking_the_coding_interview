@@ -1,21 +1,22 @@
 package leetcode
 
 fun main() {
-    val str = "aaabbbcccdeeeaabfffgeeah"
-    println("string without duplicateds = ${removeDuplicates(str)}")
+    val str = "mamma"
+    println(str.isAnagramOf("mammo"))
 }
 
-fun removeDuplicates(str: String): String {
-    val strResult = StringBuilder()
-    val characters = Array(256) { false }
-    for (char in str) {
-        if (!characters[char.toInt()]) {
-            characters[char.toInt()] = true
-            strResult.append(char)
-        } else {
-            continue
-        }
+fun String.isAnagramOf(otherStr: String): Boolean {
+    if (this.length != otherStr.length) return false
+
+    val charsCount = Array(256) { 0 }
+    for (char in this) {
+        charsCount[char.toInt()]++
     }
-    return strResult.toString()
+    for (char in otherStr) {
+        val newValue = --charsCount[char.toInt()]
+        if (newValue < 0) return false
+    }
+
+    return true
 }
 
