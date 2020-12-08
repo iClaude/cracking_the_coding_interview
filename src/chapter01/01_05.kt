@@ -42,9 +42,8 @@ private fun replaceSpaces(str1: String): String {
 
 // more general solution
 private fun String.replaceSpacesWith(otherStr: String): String {
-    var numSpaces = 0
-    for (char in this) {
-        if (char == ' ') numSpaces++
+    val numSpaces = this.count {
+        it == ' '
     }
 
     val resultStr = Array(this.length + numSpaces * (otherStr.length - 1)) { ' ' }
