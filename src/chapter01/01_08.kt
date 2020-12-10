@@ -11,16 +11,15 @@ package chapter01
 
 fun main() {
     val str1 = "waterbottle"
-    val str2 = "ottlewaterb"
+    val str2 = "erbottlewat"
     println("is $str2 a rotation of $str1? -> ${str2.isRotationOf(str1)}")
 }
 
-fun String.isRotationOf(str2: String): Boolean {
-    if (this.length != str2.length) return false
+private fun String.isRotationOf(otherStr: String): Boolean {
+    if (this.length != otherStr.length) return false
 
-    val strConcat = this + this
-    return str2.isSubstringOf(strConcat)
+    return otherStr.isSubstringOf("$this$this")
 }
 
-fun String.isSubstringOf(str2: String) =
-    str2.contains(this)
+private fun String.isSubstringOf(otherStr: String) =
+        otherStr.contains(this)
