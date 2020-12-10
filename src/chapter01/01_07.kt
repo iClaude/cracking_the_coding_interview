@@ -13,13 +13,13 @@ package chapter01
 
    Solution 2
    Scan the entire matrix and find the rows and columns to reset, saving the indexes in two arrays
-   whose elements are 1 if the row/column must not be reset and 0 if they must be reset (the two
-   arrays have length equal to the number of rows/columns in the original matrix.
+   whose elements are false if the row/column must not be reset and true if they must be reset (the two
+   arrays have length equal to the number of rows/columns in the original matrix).
    Then scan the entire matrix again and reset each element according to the informations stored
-   in the two arrays (reset if one of the 2 arrays stores 0, not reset otherwise).
+   in the two arrays (reset if one of the 2 arrays stores true, not reset otherwise).
    This way each element is considered only one time, but you have to scan the matrix 2 times. This
    algorithm is more efficient if the matrix is not very big or the number of rows/columns to reset
-   are not too many.
+   are many.
 */
 
 fun main() {
@@ -64,21 +64,21 @@ private fun setMatrixToZero(matrix: Array<Array<Int>>) {
 }
 
 private fun setMatrixToZero2(matrix: Array<Array<Int>>) {
-    val colsToReset = Array(matrix[0].size) { 1 }
-    val rowsToReset = Array(matrix.size) { 1 }
-    for (i in matrix.indices) {
-        for (j in matrix[0].indices) {
-            if (matrix[i][j] == 0) {
-                rowsToReset[i] = 0
-                colsToReset[j] = 0
+    val rowsToZero = Array(matrix.size) { false }
+    val colsToZero = Array(matrix[0].size) { false }
+
+    for (row in matrix.indices) {
+        for (col in matrix[row].indices) {
+            if (matrix[row][col] == 0) {
+                rowsToZero[row] = true
+                colsToZero[col] = true
             }
         }
     }
-
-    for (i in matrix.indices) {
-        for (j in matrix[i].indices) {
-            if (rowsToReset[i] == 0 || colsToReset[j] == 0) {
-                matrix[i][j] = 0
+    for (row in matrix.indices) {
+        for (col in matrix[row].indices) {
+            if (rowsToZero[row] || colsToZero[col]) {
+                matrix[row][col] = 0
             }
         }
     }
