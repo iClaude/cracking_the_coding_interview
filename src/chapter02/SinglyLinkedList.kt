@@ -52,31 +52,38 @@ class SinglyLinkedList<T> {
         return tail?.key
     }
 
-    fun popBack() {
-        head ?: return
+    fun popBack(): T? {
+        tail ?: return null
 
         if (head == tail) {
+            val result = head!!.key
             head = null
             tail = null
-            return
+            return result
         }
 
+        val result = tail!!.key
         var p = head
-        while (p?.next?.next != null) {
+        while (p!!.next != tail) {
             p = p.next
         }
-        p?.next = null
+        p.next = null
         tail = p
+
+        return result
     }
 
     fun find(key: T): Boolean {
         var found = false
+
         var p = head
-        while (p?.next != null && !found) {
-            if (p.key == key) found = true
+        while (p != null) {
+            if (p.key == key) {
+                found = true
+                break
+            }
             p = p.next
         }
-        if (p?.key == key) found = true
 
         return found
     }

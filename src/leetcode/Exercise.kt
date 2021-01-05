@@ -1,47 +1,35 @@
 package leetcode
 
 fun main() {
-    val matrix = Array(3) { row ->
-        Array(4) { column ->
-            5
-        }
-    }
-    matrix[0][1] = 0
 
-    println("original matrix:")
-    printMatrix(matrix)
-
-    zeroMatrix(matrix)
-    println("zeroed matrix:")
-    printMatrix(matrix)
 }
 
-private fun zeroMatrix(matrix: Array<Array<Int>>) {
-    val rowsToZero = Array(matrix.size) { false }
-    val colsToZero = Array(matrix[0].size) { false }
+class Solution {
+    fun kWeakestRows(mat: Array<IntArray>, k: Int): IntArray {
+        val rows = Array(mat.size) {
+            Row(it, mat[0].size)
+        }
 
-    for (row in matrix.indices) {
-        for (col in matrix[row].indices) {
-            if (matrix[row][col] == 0) {
-                rowsToZero[row] = true
-                colsToZero[col] = true
+        mat.forEachIndexed { index, arr ->
+            for (i in arr.indices) {
+                if (arr[i] == 0) break
+                rows[index].weakness--
             }
         }
-    }
-    for (row in matrix.indices) {
-        for (col in matrix[row].indices) {
-            if (rowsToZero[row] || colsToZero[col]) {
-                matrix[row][col] = 0
-            }
+
+        val result = Array(k) { -1 }
+        rows.sortDescending()
+        for (i in 0 until k) {
+            result[i] = rows[i].index
         }
+
+        return result.toIntArray()
     }
 }
 
-private fun printMatrix(matrix: Array<Array<Int>>) {
-    for (row in matrix.indices) {
-        for (column in matrix[row].indices) {
-            print("${matrix[row][column]}  ")
-        }
-        println()
+data class Row(val index: Int, var weakness: Int) : Comparable<Row> {
+    override fun compareTo(other: Row): Int {
+        if (this.weakness != other.weakness) return this.weakness - other.weakness
+        return other.index - this.index
     }
 }

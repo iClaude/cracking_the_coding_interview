@@ -1,43 +1,56 @@
 package leetcode
 
 fun main() {
-    val myArray = intArrayOf(1, 2, 2, 3, 1)
-    println("shortest subarray length = ${findShortestSubarray(myArray)}")
-}
-
-fun findShortestSubarray(arr: IntArray): Int {
-    val occurrencesMap: MutableMap<Int, OccurrencesData> = mutableMapOf()
-    for (i in arr.indices) {
-        val occurrenceData = occurrencesMap[arr[i]] ?: OccurrencesData()
-        occurrenceData.apply {
-            occurrences++
-            if (ind1 == -1) {
-                ind1 = i
-                ind2 = i
-            }
-            if (i > ind2) ind2 = i
-        }
-        occurrencesMap[arr[i]] = occurrenceData
-    }
-
-    var maxOcc = Integer.MIN_VALUE
-    var minLen = Integer.MAX_VALUE
-    for ((_, occurrenceData) in occurrencesMap) {
-        if (occurrenceData.occurrences >= maxOcc) {
-            minLen = if (occurrenceData.occurrences > maxOcc) Integer.MAX_VALUE else minLen
-            maxOcc = occurrenceData.occurrences
-            val len = occurrenceData.ind2 - occurrenceData.ind1 + 1
-            if (len < minLen) {
-                minLen = len
+    val head = ListNode(2).apply {
+        next = ListNode(1).apply {
+            next = ListNode(2).apply {
+                next = ListNode(2).apply {
+                    next = ListNode(5).apply {
+                        next = ListNode(1).apply {
+                            next = ListNode(7)
+                        }
+                    }
+                }
             }
         }
     }
 
-    return minLen
+    removeDuplicates(head)
+    printList(head)
 }
 
-class OccurrencesData(
-        var occurrences: Int = 0,
-        var ind1: Int = -1,
-        var ind2: Int = -1
-)
+private fun printList(head: ListNode?) {
+    var p = head
+    while (p != null) {
+        print("${p.value} - ")
+        p = p.next
+    }
+}
+
+private var occurrences = mutableMapOf<Int, Boolean>()
+
+private fun removeDuplicates(head: ListNode?) {
+    var p1: ListNode? = head ?: return
+    occurrences[p1!!.value] = true
+
+    while (p1 != null) {
+        p1.next = findNextNode(p1)
+        p1 = p1.next
+    }
+}
+
+private fun findNextNode(node: ListNode): ListNode? {
+    var p = node.next
+    while (p != null && occurrences.contains(p.value)) {
+        p = p.next
+    }
+    if (p != null) {
+        occurrences[p.value] = true
+    }
+    return p
+}
+
+
+private class ListNode(val value: Int) {
+    var next: ListNode? = null
+}

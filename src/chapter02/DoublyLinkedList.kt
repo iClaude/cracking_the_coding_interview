@@ -10,16 +10,13 @@ class DoublyLinkedList<T> {
 
     fun pushFront(key: T) {
         val node = Node(key, head, null)
-        head?.prev = node
         head = node
         if (tail == null) {
             tail = head
         }
     }
 
-    fun topFront(): T? {
-        return head?.key
-    }
+    fun topFront(): T? = head?.key
 
     fun popFront() {
         head ?: return
