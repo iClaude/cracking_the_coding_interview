@@ -12,31 +12,71 @@ import kotlin.math.abs
     pale, bake -> false
  */
 
-private fun isOneEditAway(mStr1: String, mStr2: String): Boolean {
-    if (abs(mStr1.length - mStr2.length) > 1) return false
-
-    val str1 = if (mStr1.length > mStr2.length) mStr1 else mStr2
-    val str2 = if (mStr1.length > mStr2.length) mStr2 else mStr1
-
-    var edits = 0
-    var i = 0
-    var j = 0
-    while (i in str1.indices && j in str2.indices) {
-        if (str1[i] == str2[j]) {
-            i++
-            j++
-            continue
-        }
-
-        if (i + 1 in str1.indices && j + 1 in str2.indices && str1[i + 1] == str2[j + 1]) j++
-        edits++
-        i++
-
-        if (edits > 1) return false
-    }
-
-    edits += str1.length - i
-
-    return edits < 2
+fun main() {
+    val str1 = "apple"
+    val str2 = "aple"
+    println(isMaxOneEditAway(str1, str2))
+    println(isMaxOneEditAwayCombined(str1, str2))
 }
 
+private fun isMaxOneEditAway(str1: String, str2: String): Boolean {
+    if (abs(str1.length - str2.length) > 1) return false
+
+    if (str1.length == str2.length) return checkReplace(str1, str2)
+
+    return checkInsert(str1, str2)
+}
+
+private fun checkReplace(str1: String, str2: String): Boolean {
+    var edits = 0
+    for (i in str1.indices) {
+        if (str1[i] != str2[i]) {
+            edits++
+            if (edits > 1) return false
+        }
+    }
+    return true
+}
+
+private fun checkInsert(pStr1: String, pStr2: String): Boolean {
+    val str1 = if (pStr1.length > pStr2.length) pStr1 else pStr2
+    val str2 = if (pStr2.length < pStr1.length) pStr2 else pStr1
+
+    var i = 0
+    var j = 0
+    var edits = 0
+    while (i in str1.indices && j in str2.indices) {
+        if (str1[i] != str2[j]) {
+            edits++
+            if (edits > 1) return false
+        } else {
+            j++
+        }
+        i++
+    }
+
+    return true
+}
+
+private fun isMaxOneEditAwayCombined(pStr1: String, pStr2: String): Boolean {
+    if (abs(pStr1.length - pStr2.length) > 1) return false
+
+    val str1 = if (pStr1.length > pStr2.length) pStr1 else pStr2
+    val str2 = if (pStr2.length < pStr1.length) pStr2 else pStr1
+
+    var i = 0
+    var j = 0
+    var edits = 0
+    while (i in str1.indices && j in str2.indices) {
+        if (str1[i] != str2[j]) {
+            edits++
+            if (edits > 1) return false
+            if (str1.length == str2.length) j++
+        } else {
+            j++
+        }
+        i++
+    }
+
+    return true
+}
