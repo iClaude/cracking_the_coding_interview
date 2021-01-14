@@ -1,35 +1,67 @@
 package chapter01
 
-/*
-   PROBLEM
-   1.3 Design an algorithm and write code to remove the duplicate characters in a string without using any additional buffer.
-   NOTE: One or two additional variables are fine. An extra copy of the array is not.
-   FOLLOW UP
-   Write the test cases for this method.
+/*  PROBLEM
+    URLify: Write a method to replace all spaces in a string with '%20'. You may assume that the string
+    has sufficient space at the end to hold the additional characters, and that you are given the "true"
+    length of the string. (Note: If implementing in Java, please use a character array so that you can
+    perform this operation in place.)
+    EXAMPLE
+    Input: "Mr John Smith ", 13
+    Output: "Mr%20John%20Smith" */
 
-   ALGORITHM
-   Iterate over the string and consider each character. If the character was previously considered, skip it, otherwise add it to
-   the string. To know if a character has already been added, keep a control boolean array of 256 elements, where we store if
-   that particular character has already been added to the string.
-   Performance: O(n)
-*/
+/*  ALGORITHM
+    Count the number of spaces in the original string.
+    Create an array of characters of the final size: size of the original string + number of spaces
+    * 2 (to make room for %20).
+    Loop over the original string and copy each character in the new array, or %20 in case of spaces,
+    incrementing an index to keep track of the position in the new array.
+    Finally convert the array in a string. */
 
 fun main() {
-    val str = "aaabbbcdeeefffg"
-    println("str: $str")
-    println("str without duplicates: ${removeDuplicates(str)}")
+    val str1 = " a bc  d "
+    println("new string -> ${replaceSpaces(str1)}")
+    println("new string -> ${str1.replaceSpacesWith("%20")}")
 }
 
-private fun removeDuplicates(str: String): String {
-    val strResult = StringBuilder()
-    val charsHit = Array(256) { false }
-    for (char in str) {
-        if (!charsHit[char.toInt()]) {
-            charsHit[char.toInt()] = true
-            strResult.append(char)
+private fun replaceSpaces(str1: String): String {
+    var spaces = 0
+    for (char in str1) {
+        if (char == ' ') spaces++
+    }
+    val newLen = str1.length + spaces * 2
+
+    val newStrArr = Array(newLen) { ' ' }
+    var i = 0
+    for (char in str1) {
+        if (char != ' ') {
+            newStrArr[i++] = char
         } else {
-            continue
+            newStrArr[i++] = '%'
+            newStrArr[i++] = '2'
+            newStrArr[i++] = '0'
         }
     }
-    return strResult.toString()
+
+    return newStrArr.joinToString("")
+}
+
+// more general solution
+private fun String.replaceSpacesWith(otherStr: String): String {
+    val numSpaces = this.count {
+        it == ' '
+    }
+
+    val resultStr = Array(this.length + numSpaces * (otherStr.length - 1)) { ' ' }
+    var i = 0
+    for (char in this) {
+        if (char != ' ') {
+            resultStr[i++] = char
+        } else {
+            for (char2 in otherStr) {
+                resultStr[i++] = char2
+            }
+        }
+    }
+
+    return resultStr.joinToString("") { it.toString() }
 }

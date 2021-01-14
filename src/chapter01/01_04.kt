@@ -1,40 +1,42 @@
 package chapter01
 
-/* PROBLEM
-   1.4 Write a method to decide if two strings are anagrams or not (permutations). */
+/*  Palindrome Permutation: Given a string, write a function to check if it is a permutation of a palindrome.
+    A palindrome is a word or phrase that is the same forwards and backwards. A permutation
+    is a rearrangement of letters. The palindrome does not need to be limited to just dictionary words.
 
-/* ALGORITHM
-   First of all, let's check that the two strings have equal length: if the lengths are not
-   equal they can't be anagrams.
-   Two strings are anagrams (permutations) if they have the same characters in the same amount,
-   just in a different order.
-   We keep an array of characters with 256 elements (ASCII characters), initially set to 0. This
-   array shows, for each character, how many times that particular character is present in our
-   strings.
-   We scan string1 and update the array. Then we scan string2: for each character we decrement the
-   amount corresponding to the character in our control array. If we obtain -1, string2 has more
-   occurrences of that particular character. Therefore the two strings can't be anagrams.
-   If we arrive at the end without errors that means that the two strings are actually anagrams:
-   the control array becomes 0.
-   Performance: O(n), where n is: string1 charaters + string2 characters. */
+    EXAMPLE
+    Input: Tact Coa
+    Output: True (permutations: "taco cat", "atco eta", etc.)
+ */
 
 fun main() {
-    val str1 = "sarnia9"
-    val str2 = "9aisarn"
-    println("are the 2 strings anagrams? -> ${str1.isAnagramOf(str2)}")
+    println(isPermutationOfPalindrome("cATt   Coa"))
 }
 
-private fun String.isAnagramOf(otherStr: String): Boolean {
-    if (this.length != otherStr.length) return false
+private fun isPermutationOfPalindrome(str: String): Boolean {
+    if (str.length == 1) return true
 
-    val charsCount = Array(256) { 0 }
-    for (char in this) {
-        charsCount[char.toInt()]++
-    }
-    for (char in otherStr) {
-        val newValue = --charsCount[char.toInt()]
-        if (newValue < 0) return false
+    val occurrences = Array(256) { 0 }
+    var spaces = 0
+    for (char in str) {
+        if (char == ' ') {
+            spaces++
+            continue
+        }
+        occurrences[char.toLowerCase().toInt()]++
     }
 
-    return true
+    var evens = 0
+    var odds = 0
+    for (occ in occurrences) {
+        if (occ == 0) continue
+        if (occ % 2 == 0) {
+            evens++
+        } else {
+            odds++
+        }
+    }
+
+    val strLen = str.length - spaces
+    return (strLen % 2 == 0 && odds == 0) || (strLen % 2 != 0 && odds == 1)
 }

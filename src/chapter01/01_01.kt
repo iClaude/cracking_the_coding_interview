@@ -1,8 +1,8 @@
 package chapter01
 
 /* PROBLEM
-   1.1 Implement an algorithm to determine if a string has all unique characters.
-   What if you can not use additional data structures? */
+   Is Unique: Implement an algorithm to determine if a string has all unique characters.
+   What if you cannot use additional data structures? */
 
 /* ALGORITHM 1 - areCharsUnique
    Keep and array of 256 elements, corresponding to each ASCII character, initially set to
@@ -11,11 +11,13 @@ package chapter01
    in the control array already set tu true (this would mean that the letter has already been
    found before).
    Performance: O(n)
+
    ALGORITHM 2 - areCharsUniqueSort
    Not optimal.
    First I sort the characters of the string in ascending order, then I scan the
    sorted string and check that there must not be 2 equal consecutive characters.
    Performance: O(n*logn)
+
    ALGORITHM 3 - areCharsUniqueDoubleLoop
    Not optimal.
    Compare each character of the string with all subsequent characters.

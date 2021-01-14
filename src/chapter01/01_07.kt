@@ -1,85 +1,55 @@
 package chapter01
 
-/*
-   1.7 Write an algorithm such that if an element in an MxN matrix is 0, its entire row and column
-   is set to 0.
+/*  PROBLEM
+    Rotate Matrix: Given an image represented by an NxN matrix, where each pixel in the image is 4
+    bytes, write a method to rotate the image by 90 degrees. Can you do this in place? */
 
-   Solution 1
-   Scan the entire matrix and save in two lists the indexes of rows and columns to reset. Then
-   take each row and column from the two arrays and reset it.
-   This way some elements are considered multiple times, but if the matrix is very big and the rows
-   and columns to reset are few, the algorithm is faster than scanning the entire matrix a second
-   time.
 
-   Solution 2
-   Scan the entire matrix and find the rows and columns to reset, saving the indexes in two arrays
-   whose elements are false if the row/column must not be reset and true if they must be reset (the two
-   arrays have length equal to the number of rows/columns in the original matrix).
-   Then scan the entire matrix again and reset each element according to the informations stored
-   in the two arrays (reset if one of the 2 arrays stores true, not reset otherwise).
-   This way each element is considered only one time, but you have to scan the matrix 2 times. This
-   algorithm is more efficient if the matrix is not very big or the number of rows/columns to reset
-   are many.
-*/
+/*  ALGORITHM
+    Rotation in place.
+    We rotate the matrix starting from the outer ring, the considering the inner rings one
+    after the other.
+    For each ring we take each element of the top side, put it in the final position in the
+    right side, take the relative element and put in the final position in the bottom side,
+    take the relative element and put it in the final position in the left side.
+    We just need to be very careful to calculate the correct indices. */
 
 fun main() {
-    val matrix = Array(5) { Array(6) { 1 } }
-    matrix[1][0] = 0
-    matrix[2][4] = 0
-    setMatrixToZero(matrix)
+    val n = 3
+    val matrix = Array(n) { i ->
+        Array(n) { j ->
+            i * n + (j + 1)
+        }
+    }
 
+    println("original matrix")
+    printMatrix(matrix)
+    println("matrix rotated 90 degrees")
+    rotateMatrix90(matrix)
+    printMatrix(matrix)
+}
+
+private fun printMatrix(matrix: Array<Array<Int>>) {
     for (i in matrix.indices) {
         for (j in matrix[i].indices) {
-            print(matrix[i][j])
-            print(" ")
+            print("${matrix[i][j]}  ")
         }
         println()
     }
 }
 
-private fun setMatrixToZero(matrix: Array<Array<Int>>) {
-    val colsToReset = mutableListOf<Int>()
-    val rowsToReset = mutableListOf<Int>()
-    for (i in matrix.indices) {
-        for (j in matrix[0].indices) {
-            if (matrix[i][j] == 0) {
-                rowsToReset.add(i)
-                colsToReset.add(j)
-            }
+private fun rotateMatrix90(matrix: Array<Array<Int>>) {
+    for (level in 0..(matrix.size - 1) / 2) {
+        for (i in level..(matrix.size - 2 - level)) {
+            val el1 = matrix[level][i]
+            val el2 = matrix[i][matrix.size - 1 - level]
+            val el3 = matrix[matrix.size - 1 - level][matrix.size - 1 - i]
+            val el4 = matrix[matrix.size - 1 - i][level]
+            matrix[level][i] = el4
+            matrix[i][matrix.size - 1 - level] = el1
+            matrix[matrix.size - 1 - level][matrix.size - 1 - i] = el2
+            matrix[matrix.size - 1 - i][level] = el3
         }
-    }
 
-    for (rowToReset in rowsToReset) {
-        for (j in matrix[rowToReset].indices) {
-            matrix[rowToReset][j] = 0
-        }
-    }
-
-    for (colToReset in colsToReset) {
-        for (i in matrix.indices) {
-            matrix[i][colToReset] = 0
-        }
-    }
-
-}
-
-private fun setMatrixToZero2(matrix: Array<Array<Int>>) {
-    val rowsToZero = Array(matrix.size) { false }
-    val colsToZero = Array(matrix[0].size) { false }
-
-    for (row in matrix.indices) {
-        for (col in matrix[row].indices) {
-            if (matrix[row][col] == 0) {
-                rowsToZero[row] = true
-                colsToZero[col] = true
-            }
-        }
-    }
-    for (row in matrix.indices) {
-        for (col in matrix[row].indices) {
-            if (rowsToZero[row] || colsToZero[col]) {
-                matrix[row][col] = 0
-            }
-        }
     }
 }
