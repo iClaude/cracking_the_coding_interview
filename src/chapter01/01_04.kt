@@ -9,34 +9,26 @@ package chapter01
     Output: True (permutations: "taco cat", "atco eta", etc.)
  */
 
+// TODO: 20/01/2021 redo this exercise after learning bit manipulation
 fun main() {
-    println(isPermutationOfPalindrome("cATt   Coa"))
+    println(isPalindromePermutation("ottetto"))
 }
 
-private fun isPermutationOfPalindrome(str: String): Boolean {
-    if (str.length == 1) return true
-
-    val occurrences = Array(256) { 0 }
-    var spaces = 0
+private fun isPalindromePermutation(str: String): Boolean {
+    val evens = Array(256) { true }
     for (char in str) {
-        if (char == ' ') {
-            spaces++
-            continue
-        }
-        occurrences[char.toLowerCase().toInt()]++
-    }
-
-    var evens = 0
-    var odds = 0
-    for (occ in occurrences) {
-        if (occ == 0) continue
-        if (occ % 2 == 0) {
-            evens++
-        } else {
-            odds++
+        if (char != ' ') {
+            evens[char.toLowerCase().toInt()] = !evens[char.toLowerCase().toInt()]
         }
     }
 
-    val strLen = str.length - spaces
-    return (strLen % 2 == 0 && odds == 0) || (strLen % 2 != 0 && odds == 1)
+    var numOdds = 0
+    for (i in 0..255) {
+        if (!evens[i]) {
+            numOdds++
+            if (numOdds > 1) return false
+        }
+    }
+
+    return true
 }
