@@ -1,37 +1,79 @@
 package chapter02
 
-/*
-  PROBLEM
-  2.1 Write code to remove duplicates from an unsorted linked list.
-
-  ALGORITHM 1 (with additional buffer)
-  [see the method removeDuplicates()]
-  Scan the list and add each new node in a control map.
-  If a node is included in the map, skip it and update the pointer accordingly, otherwise add it to the map.
-  Performance: O(n). An additional buffer containing each element of the list is used (a map).
-
-  ALGORITHM 2 (without additional buffer)
-  [see the method removeDuplicatesWithoutBufferA()]
-  Take each node and scan the rest of the list deleting other occurrences of the same node.
-
-  ALGORITHM 3 (without additional buffer)
-  [see the method removeDuplicatesWithoutBufferB()]
-  Take each node X, scan the list from the beginning and when you find another node with the same key,
-  delete X, exiting the inner loop.
-  This algorithm is more efficient than algorithm 2 because when you find a duplicate you can delete the current
-  node and stop scanning the following nodes.
-*/
+/*  Remove Dups! Write code to remove duplicates from an unsorted linked list.
+    FOLLOW UP
+    How would you solve this problem if a temporary buffer is not allowed?  */
 
 fun main() {
-    val list = SinglyLinkedList<Char>().apply {
-        pushBack('a')
-        pushBack('a')
-        pushBack('b')
-        pushBack('b')
-        pushBack('c')
-
-
+    val head = LinkedNode(1).apply {
+        next = LinkedNode(2)
     }
-    list.removeDuplicates()
-    println(list.toString())
+    removeDuplicates(head)
+    printList(head)
+
+    println()
+    val head2 = LinkedNode(1).apply {
+        next = LinkedNode(2)
+    }
+    removeDuplicatesWithoutBuffer(head2)
+    printList(head2)
+}
+
+class LinkedNode(val value: Int) {
+    var next: LinkedNode? = null
+}
+
+private fun removeDuplicates(head: LinkedNode) {
+    val occurrences = mutableMapOf(head.value to true)
+
+    var p1: LinkedNode? = head
+    var p2: LinkedNode? = head.next
+    while (p2 != null) {
+        if (!occurrences.contains(p2.value)) {
+            occurrences[p2.value] = true
+            p1?.next = p2
+            p1 = p1?.next
+        }
+        p2 = p2.next
+    }
+    p1?.next = p2
+}
+
+private fun removeDuplicatesWithoutBuffer(head: LinkedNode) {
+    var pPrev = head
+    var p = head.next
+    while (p != null) {
+        if (isDuplicate(head, p)) {
+            pPrev.next = findNext(p)
+            p = pPrev.next
+        } else {
+            pPrev = p
+            p = p.next
+        }
+    }
+}
+
+private fun isDuplicate(head: LinkedNode, currentNode: LinkedNode): Boolean {
+    var p = head
+    while (p != currentNode) {
+        if (p.value == currentNode.value) return true
+        p = p.next!!
+    }
+    return false
+}
+
+private fun findNext(currentNode: LinkedNode): LinkedNode? {
+    var p: LinkedNode? = currentNode.next
+    while (p?.value == currentNode.value) {
+        p = p.next
+    }
+    return p
+}
+
+private fun printList(head: LinkedNode) {
+    var p: LinkedNode? = head
+    while (p != null) {
+        print("${p.value} - ")
+        p = p.next
+    }
 }
