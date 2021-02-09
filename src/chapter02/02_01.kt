@@ -4,6 +4,21 @@ package chapter02
     FOLLOW UP
     How would you solve this problem if a temporary buffer is not allowed?  */
 
+fun main() {
+    val head = LinkedNode(1).apply {
+        next = LinkedNode(2)
+    }
+    removeDuplicates(head)
+    printList(head)
+
+    println()
+    val head2 = LinkedNode(1).apply {
+        next = LinkedNode(2)
+    }
+    removeDuplicatesWithoutBuffer(head2)
+    printList(head2)
+}
+
 private fun removeDuplicates(head: LinkedNode) {
     val occurrences = mutableMapOf(head.value to true)
 
@@ -57,19 +72,4 @@ private fun printList(head: LinkedNode) {
         print("${p.value} - ")
         p = p.next
     }
-}
-
-fun main() {
-    val head = LinkedNode(1).apply {
-        next = LinkedNode(2)
-    }
-    removeDuplicates(head)
-    printList(head)
-
-    println()
-    val head2 = LinkedNode(1).apply {
-        next = LinkedNode(2)
-    }
-    removeDuplicatesWithoutBuffer(head2)
-    printList(head2)
 }

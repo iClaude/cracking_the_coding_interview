@@ -1,5 +1,5 @@
 package chapter02
 
-class LinkedNode(val value: Int) {
+class LinkedNode(var value: Int) {
     var next: LinkedNode? = null
 }
