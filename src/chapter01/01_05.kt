@@ -44,16 +44,17 @@ private fun checkInsertOrRemove(str1: String, str2: String): Boolean {
     val mStr1 = if (str1.length > str2.length) str1 else str2
     val mStr2 = if (str1.length > str2.length) str2 else str1
 
+    var edits = 0
     var p1 = 0
     var p2 = 0
     while (p1 in mStr1.indices && p2 in mStr2.indices) {
         if (mStr1[p1] == mStr2[p2]) {
-            p1++
             p2++
         } else {
-            p1++
-            if (p1 - p2 > 1) return false
+            edits++
+            if (edits > 1) return false
         }
+        p1++
     }
     return true
 }
