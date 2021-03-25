@@ -7,8 +7,8 @@ package chapter03
 
 // using 2 stacks
 class StackWithMin<T : Comparable<T>> {
-    private val stack = Stack<T>()
-    private val stackMin = Stack<T>()
+    private val stack = MyStack<T>()
+    private val stackMin = MyStack<T>()
 
     fun empty() = stack.empty()
 
@@ -35,7 +35,7 @@ class StackWithMin<T : Comparable<T>> {
 
 // using 1 stack where each element keeps track of the min
 class StackWithMinV2<T : Comparable<T>> {
-    private val stack = Stack<Pair<T, T>>()
+    private val stack = MyStack<Pair<T, T>>()
 
     fun empty() = stack.empty()
 

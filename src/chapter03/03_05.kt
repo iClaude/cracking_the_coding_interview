@@ -6,7 +6,7 @@ import java.util.*
     3.5 Implement a MyQueue class which implements a queue using two stacks.
  */
 
-class MyQueue<T> {
+class MyQueueWithTwoStacks<T> {
     private val stackEnqueue = Stack<T>()
     private val stackDequeue = Stack<T>()
 

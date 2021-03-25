@@ -6,8 +6,8 @@ package chapter03
     to write this program: push | pop | peek | isEmpty.
  */
 
-fun orderStack(stack: Stack<Int>): Stack<Int> {
-    val stackResult = Stack<Int>()
+fun orderStack(stack: MyStack<Int>): MyStack<Int> {
+    val stackResult = MyStack<Int>()
     while (!stack.empty()) {
         val el = stack.pop()!!
 

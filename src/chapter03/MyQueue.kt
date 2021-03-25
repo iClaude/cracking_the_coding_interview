@@ -1,21 +1,9 @@
-package recap
-
-fun main() {
-/*    val myQueue = MyQueue<Char>().apply {
-        enqueue('a')
-        enqueue('b')
-        println(empty())
-        enqueue('c')
-        println(dequeue())
-        println(empty())
-        println(dequeue())
-        println(dequeue())
-        println(empty())
-        dequeue()
-    }*/
-}
+package chapter03
 
 /*
+    Simple implementation of a queue using a singly linked list with tail pointer.
+ */
+
 class MyQueue<T> {
     private var head: LinkedNode<T>? = null
     private var tail: LinkedNode<T>? = null
@@ -44,4 +32,4 @@ class MyQueue<T> {
     private class LinkedNode<T>(val value: T) {
         var next: LinkedNode<T>? = null
     }
-}*/
+}
