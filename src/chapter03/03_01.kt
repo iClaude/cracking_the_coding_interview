@@ -1,185 +1,172 @@
 package chapter03
 
-/*
-    3.1 Describe how you could use a single array to implement three stacks.
- */
+import chapter03.Stacks.*
+import java.util.*
 
-// Using a backing array with equal space for the 3 queues.
-class ThreeQueues(val size: Int) {
-    private var sizeCorr = if (size >= 9) size else 9
+enum class Stacks { ONE, TWO, THREE }
 
-    private val backingArray = Array(sizeCorr) { -1 }
+class ThreeStacksEqualSize(size: Int) {
+    private val mSize = size * 3
+    private val mArray = IntArray(mSize)
 
-    private val mins = Array(3) {
-        when (it) {
-            0 -> 0
-            1 -> (sizeCorr + 1) / 3
-            else -> ((sizeCorr + 1) / 3) * 2
-        }
+    private val starts = intArrayOf(0, mSize / 3, mSize * 2 / 3)
+    private val ends = intArrayOf(mSize / 3 - 1, mSize * 2 / 3 - 1, mSize - 1)
+    private val indices = Array(3) { starts[it] - 1 }
+
+    fun push(value: Int, stack: Stacks) {
+        if (indices[stack.ordinal] + 1 > ends[stack.ordinal]) throw EmptyStackException()
+        indices[stack.ordinal]++
+        mArray[indices[stack.ordinal]] = value
     }
 
-    private val maxs = Array(3) {
-        when (it) {
-            0 -> (sizeCorr + 1) / 3 - 1
-            1 -> ((sizeCorr + 1) / 3) * 2 - 1
-            else -> sizeCorr - 1
-        }
+    fun top(stack: Stacks): Int {
+        if (indices[stack.ordinal] !in starts[stack.ordinal]..ends[stack.ordinal]) throw EmptyStackException()
+        return mArray[indices[stack.ordinal]]
     }
 
-    private val reads = Array(3) {
-        mins[it]
+    fun pop(stack: Stacks): Int {
+        if (indices[stack.ordinal] !in starts[stack.ordinal]..ends[stack.ordinal]) throw EmptyStackException()
+        val result = mArray[indices[stack.ordinal]]
+        indices[stack.ordinal]--
+
+        return result
     }
 
-    private val writes = Array(3) {
-        mins[it]
-    }
-
-    private fun nextInd(curr: Int, min: Int, max: Int) = if (curr + 1 <= max) curr + 1 else min
-
-    // queue 1
-    fun empty(queue: Int): Boolean {
-        if (queue > 2) throw IndexOutOfBoundsException()
-
-        return reads[queue] == writes[queue]
-    }
-
-    fun dequeue(queue: Int): Int {
-        if (empty(queue)) throw IndexOutOfBoundsException()
-
-        val value = backingArray[reads[queue]]
-        backingArray[reads[queue]] = -1
-        reads[queue] = nextInd(reads[queue], mins[queue], maxs[queue])
-        return value
-    }
-
-    fun enqueue(queue: Int, value: Int) {
-        val nextInd = nextInd(writes[queue], mins[queue], maxs[queue])
-        if (nextInd != reads[queue]) {
-            backingArray[writes[queue]] = value
-            writes[queue] = nextInd
-        } else {
-            throw IndexOutOfBoundsException()
-        }
-    }
-
-    override fun toString(): String {
-        return backingArray.contentToString()
-    }
+    fun empty(stack: Stacks) = indices[stack.ordinal] < starts[stack.ordinal]
 }
 
-// Using a backing array with dynamic space for the 3 queues.
-class ThreeQueuesSpaceOptimized(size: Int) {
-    private data class Element(val value: Int, var nextInd: Int = -1)
+class ThreeStacksFlexibleWithPointers(size: Int) {
+    private val mSize = size * 3
+    private val mArray = Array(mSize) { Integer.MIN_VALUE to -1 }
+    private val starts = intArrayOf(-1, -1, -1)
+    private var pos = 0
 
-    private var arraySize: Int = if (size >= 3) size else 9
-
-    private val backingArray = Array<Element?>(arraySize) { null }
-
-    private val reads = Array(3) { -1 }
-    private val writes = Array(3) { -1 }
-    private val freeIndexes = Queue<Int>().apply {
-        repeat(arraySize) {
-            enqueue(it)
+    fun push(value: Int, stack: Stacks) {
+        var foundSpot = false
+        for (i in pos + 1 until mSize) {
+            if (mArray[i].first == Integer.MIN_VALUE) {
+                foundSpot = true
+                pos = i
+                break
+            }
         }
-    }
-
-    // queue 1
-    fun empty(queue: Int): Boolean {
-        if (queue !in 0..2) throw IndexOutOfBoundsException()
-        return reads[queue] == -1
-    }
-
-    fun dequeue(queue: Int): Int {
-        if (empty(queue)) throw UnsupportedOperationException()
-
-        val element = backingArray[reads[queue]]
-        backingArray[reads[queue]] = null
-        freeIndexes.enqueue(reads[queue])
-        reads[queue] = element!!.nextInd
-        return element.value
-    }
-
-    fun enqueue(queue: Int, value: Int) {
-        if (queue !in 0..2) throw IndexOutOfBoundsException()
-
-        val writeIndex = freeIndexes.dequeue() ?: throw UnsupportedOperationException()
-
-        backingArray[writeIndex] = Element(value)
-        if (writes[queue] != -1) backingArray[writes[queue]]!!.nextInd = writeIndex
-        writes[queue] = writeIndex
-        if (reads[queue] == -1) reads[queue] = writeIndex
-
-    }
-
-    override fun toString(): String {
-        val sb = StringBuilder()
-        for (element in backingArray) {
-            sb.append("${element?.value} - ")
+        if (!foundSpot) {
+            for (i in 0 until pos) {
+                if (mArray[i].first == Integer.MIN_VALUE) {
+                    foundSpot = true
+                    pos = i
+                    break
+                }
+            }
         }
-        return sb.toString()
+
+        if (!foundSpot) throw EmptyStackException()
+        mArray[pos] = value to starts[stack.ordinal]
+        starts[stack.ordinal] = pos
     }
+
+    fun top(stack: Stacks): Int {
+        if (starts[stack.ordinal] == -1) throw EmptyStackException()
+        return mArray[starts[stack.ordinal]].first
+    }
+
+    fun pop(stack: Stacks): Int {
+        if (starts[stack.ordinal] == -1) throw EmptyStackException()
+
+        val result = mArray[starts[stack.ordinal]].first
+        starts[stack.ordinal] = mArray[starts[stack.ordinal]].second
+
+        return result
+    }
+
+    fun empty(stack: Stacks) = starts[stack.ordinal] == -1
 }
 
-// Test
-fun main() {
-/*    println("TEST THREQUEUES")
-    val queues = ThreeQueues(5).apply {
-        enqueue(0, 3)
-        enqueue(0, 4)
-        enqueue(1, 5)
-        enqueue(2, 9)
-        println(toString())
-        enqueue(1, 5)
-        enqueue(2, 8)
-        println(toString())
-        println(dequeue(0))
-        enqueue(0, 8)
-        println(toString())
-        println(dequeue(1))
-        println(toString())
-        println(dequeue(1))
-        println(empty(1))
-        println(toString())
-    }*/
+class ThreeStacksFlexibleNoPointers(capacity: Int) {
+    private val totalCapacity = capacity * 3
 
-    println("TEST THREQUEUESOPTIMIZED")
-    val queuesOpt = ThreeQueuesSpaceOptimized(9).apply {
-        enqueue(0, 1)
-        enqueue(0, 2)
-        enqueue(0, 3)
-
-        enqueue(1, 4)
-        enqueue(1, 5)
-        enqueue(1, 6)
-        enqueue(1, 7)
-
-        enqueue(2, 8)
-        enqueue(2, 9)
-
-        println(toString())
-
-        println(dequeue(2))
-        println(toString())
-
-        enqueue(0, 10)
-        println(toString())
-
-        println(dequeue(2))
-        println(toString())
-
-        enqueue(2, 4)
-        println(toString())
-
-        println(dequeue(0))
-        println(dequeue(0))
-        println(toString())
-
-        enqueue(2, 6)
-        println(toString())
-
-        enqueue(1, 5)
-        println(toString())
-
+    private class StackInfo(var size: Int = 0, var capacity: Int = 0, var firstIndex: Int = 0, var lastIndex: Int = 0) {
+        fun isFull() = size == capacity
+        fun isEmpty() = size == 0
     }
 
+    private val backingArray = Array(totalCapacity) { Integer.MIN_VALUE }
+
+    private val stacks = Array(3) { stackNum ->
+        StackInfo(0, capacity, stackNum * capacity, (stackNum + 1) * capacity - 1)
+    }
+
+    fun isEmpty(stack: Stacks) = stacks[stack.ordinal].size == 0
+
+    fun top(stack: Stacks): Int {
+        val stackInfo = stacks[stack.ordinal]
+        if (stackInfo.isEmpty()) throw EmptyStackException()
+
+        return backingArray[stackInfo.firstIndex + stackInfo.size - 1]
+    }
+
+    fun pop(stack: Stacks): Int {
+        val stackInfo = stacks[stack.ordinal]
+        if (stackInfo.isEmpty()) throw EmptyStackException()
+
+        val result = backingArray[stackInfo.firstIndex + stackInfo.size - 1]
+        stackInfo.size--
+
+        return result
+    }
+
+    fun push(value: Int, stack: Stacks) {
+        if (stacks[ONE.ordinal].isFull() && stacks[TWO.ordinal].isFull() && stacks[THREE.ordinal].isFull()) {
+            throw EmptyStackException()
+        }
+
+        val stackInfoCurr = stacks[stack.ordinal]
+        if (!stackInfoCurr.isFull()) {
+            backingArray[stackInfoCurr.firstIndex + stackInfoCurr.size] = value
+            stackInfoCurr.size++
+            return
+        }
+
+        val stackInfoNext = stacks[(stack.ordinal + 1) % 3]
+        if (!stackInfoNext.isFull()) {
+            pushIntoNext(stackInfoCurr, stackInfoNext, value)
+            return
+        }
+
+        val prev = if (stack.ordinal - 1 >= 0) stack.ordinal - 1 else 2
+        pushIntoPrevious(stackInfoCurr, stacks[prev], value)
+    }
+
+    private fun pushIntoNext(stackInfoOrig: StackInfo, stackInfoDest: StackInfo, value: Int) {
+        for (i in stackInfoDest.firstIndex + stackInfoDest.size - 1 downTo stackInfoDest.firstIndex) {
+            backingArray[i + 1] = backingArray[i]
+        }
+        stackInfoDest.apply {
+            capacity--
+            firstIndex++
+        }
+        stackInfoOrig.apply {
+            size++
+            capacity++
+            lastIndex = (lastIndex + 1) % totalCapacity
+        }
+        backingArray[stackInfoOrig.lastIndex] = value
+    }
+
+    private fun pushIntoPrevious(stackInfoOrig: StackInfo, stackInfoDest: StackInfo, value: Int) {
+        for (i in stackInfoOrig.firstIndex..stackInfoOrig.lastIndex) {
+            val index = if (i - 1 >= 0) i - 1 else totalCapacity - 1 - i
+            backingArray[index] = backingArray[i]
+        }
+        stackInfoOrig.apply {
+            size++
+            capacity++
+            firstIndex = stackInfoDest.lastIndex
+        }
+        stackInfoDest.apply {
+            capacity--
+            lastIndex--
+        }
+        backingArray[stackInfoOrig.lastIndex] = value
+    }
 }
