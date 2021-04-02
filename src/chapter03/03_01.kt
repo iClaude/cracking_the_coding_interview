@@ -5,12 +5,12 @@ import java.util.*
 
 enum class Stacks { ONE, TWO, THREE }
 
-class ThreeStacksEqualSize(size: Int) {
-    private val mSize = size * 3
-    private val mArray = IntArray(mSize)
+class ThreeStacksEqualSize(capacity: Int) {
+    private val totalCapacity = capacity * 3
+    private val mArray = IntArray(totalCapacity)
 
-    private val starts = intArrayOf(0, mSize / 3, mSize * 2 / 3)
-    private val ends = intArrayOf(mSize / 3 - 1, mSize * 2 / 3 - 1, mSize - 1)
+    private val starts = intArrayOf(0, totalCapacity / 3, totalCapacity * 2 / 3)
+    private val ends = intArrayOf(totalCapacity / 3 - 1, totalCapacity * 2 / 3 - 1, totalCapacity - 1)
     private val indices = Array(3) { starts[it] - 1 }
 
     fun push(value: Int, stack: Stacks) {
