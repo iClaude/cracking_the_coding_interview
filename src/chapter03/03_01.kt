@@ -3,6 +3,8 @@ package chapter03
 import chapter03.Stacks.*
 import java.util.*
 
+/* Three in One: Describe how you could use a single array to implement three stacks. */
+
 enum class Stacks { ONE, TWO, THREE }
 
 class ThreeStacksEqualSize(capacity: Int) {
