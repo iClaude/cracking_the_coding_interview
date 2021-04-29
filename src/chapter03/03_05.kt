@@ -2,56 +2,41 @@ package chapter03
 
 import java.util.*
 
-/*
-    3.5 Implement a MyQueue class which implements a queue using two stacks.
- */
+/*  Sort Stack: Write a program to sort a stack such that the smallest items are on the top. You can use
+    an additional temporary stack, but you may not copy the elements into any other data structure
+    (such as an array). The stack supports the following operations: push, pop, peek, and is Empty. */
 
-class MyQueueWithTwoStacks<T> {
-    private val stackEnqueue = Stack<T>()
-    private val stackDequeue = Stack<T>()
-
-    fun empty() = stackEnqueue.empty() && stackDequeue.empty()
-
-    fun enqueue(el: T) {
-        stackEnqueue.push(el)
+fun main() {
+    val stack = Stack<Int>().apply {
+        push(6)
+        push(5)
+        push(9)
+        push(1)
+        push(22)
+        push(3)
     }
 
-    fun dequeue(): T? {
-        if (!stackDequeue.empty()) return stackDequeue.pop()
+    val sortedStack = sortStack(stack)
 
-        if (stackEnqueue.empty()) return null
-
-        while (!stackEnqueue.empty()) {
-            stackDequeue.push(stackEnqueue.pop()!!)
-        }
-        return stackDequeue.pop()
-    }
+    println(sortedStack.peek())
 }
 
-// this classes uses the Java Stack class (which throws exceptions if the stack is empty)
-class MyQueueB<T> {
-    private val stackEnqueue = java.util.Stack<T>()
-    private val stackDequeue = java.util.Stack<T>()
+private fun sortStack(stack: Stack<Int>): Stack<Int> {
+    val sortedStack = Stack<Int>()
 
-    fun empty() = stackEnqueue.empty() && stackDequeue.empty()
+    while (!stack.isEmpty()) {
+        val item = stack.pop()
 
-    fun enqueue(element: T) {
-        stackEnqueue.push(element)
-    }
-
-    fun dequeue(): T {
-        if (empty()) throw EmptyStackException()
-
-        if (stackDequeue.empty()) {
-            moveElements()
+        var i = 0
+        while (!sortedStack.isEmpty() && sortedStack.peek() < item) {
+            stack.push(sortedStack.pop())
+            i++
         }
-
-        return stackDequeue.pop()
-    }
-
-    private fun moveElements() {
-        while (!stackEnqueue.empty()) {
-            stackDequeue.push(stackEnqueue.pop())
+        sortedStack.push(item)
+        repeat(i) {
+            sortedStack.push(stack.pop())
         }
     }
+
+    return sortedStack
 }
