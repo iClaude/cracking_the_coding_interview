@@ -13,34 +13,12 @@ import java.util.*
     and dequeueCat. You may use the built-in Linked list data structure.
  */
 
-fun main() {
-    val animalShelter = AnimalShelter().apply {
-        enqueue(Cat("Tommy"))
-        enqueue(Cat("Timmy"))
-        enqueue(Cat("Jerry"))
-        enqueue(Dog("Alpha"))
-        enqueue(Cat("Micio"))
-        enqueue(Cat("Micetto"))
-        enqueue(Dog("Micia"))
-
-        println(dequeueDog()?.name)
-        println(dequeueDog()?.name)
-
-        println(dequeueAny()?.name)
-        println(dequeueAny()?.name)
-        println(dequeueAny()?.name)
-        println(dequeueAny()?.name)
-        println(dequeueAny()?.name)
-        println(dequeueAny()?.name)
-    }
-}
-
 sealed class Animal(val name: String, val race: String) {
     class Dog(name: String, race: String = "no race") : Animal(name, race)
     class Cat(name: String, race: String = "no race") : Animal(name, race)
 }
 
-class AnimalShelter {
+class AnimalShelterWithOneList {
     private val animals = LinkedList<Animal>()
     private val tmpStack = Stack<Animal>()
 
@@ -53,14 +31,13 @@ class AnimalShelter {
     fun dequeueAny(): Animal? = animals.poll()
 
     fun dequeueDog(): Dog? {
-        if (isEmpty()) throw Exception("Animal shelter is empty!")
+        if (isEmpty()) return null
 
         while (!animals.isEmpty() && animals.peek() is Cat) {
             tmpStack.push(animals.poll())
         }
-        if (animals.isEmpty()) return null
 
-        val dog = animals.pop()
+        val dog = animals.poll()
         while (!tmpStack.empty()) {
             animals.addFirst(tmpStack.pop())
         }
@@ -69,14 +46,13 @@ class AnimalShelter {
     }
 
     fun dequeueCat(): Cat? {
-        if (isEmpty()) throw Exception("Animal shelter is empty!")
+        if (isEmpty()) return null
 
         while (!animals.isEmpty() && animals.peek() is Dog) {
             tmpStack.push(animals.poll())
         }
-        if (animals.isEmpty()) return null
 
-        val cat = animals.pop()
+        val cat = animals.poll()
         while (!tmpStack.empty()) {
             animals.addFirst(tmpStack.pop())
         }
@@ -84,4 +60,41 @@ class AnimalShelter {
         return cat as Cat
     }
 
+}
+
+class AnimalShelterWithTwoLists {
+    private var count = 0
+    private val dogs = LinkedList<Pair<Dog, Int>>()
+    private val cats = LinkedList<Pair<Cat, Int>>()
+
+    fun isEmpty() = dogs.isEmpty() && cats.isEmpty()
+
+    fun enqueue(animal: Animal) {
+        if (animal is Dog) {
+            dogs.add(animal to count++)
+        } else {
+            cats.add((animal as Cat) to count++)
+        }
+    }
+
+    fun dequeueDog(): Dog? {
+        return dogs.poll()?.first
+    }
+
+    fun dequeueCat(): Cat? {
+        return cats.poll()?.first
+    }
+
+    fun dequeueAny(): Animal? {
+        if (isEmpty()) return null
+
+        val dogIndex = dogs.peek()?.second ?: Integer.MAX_VALUE
+        val catIndex = cats.peek()?.second ?: Integer.MAX_VALUE
+
+        return if (dogIndex < catIndex) {
+            dogs.poll().first
+        } else {
+            cats.poll().first
+        }
+    }
 }
