@@ -1,67 +1,76 @@
 package recap
 
-import java.util.*
+import kotlin.math.abs
 
 fun main() {
-    val stack = StackWithSort<Int>().apply {
-        push(3)
-        push(4)
-        push(1)
-        push(7)
-        push(5)
-        pop()
-        pop()
-    }
+    val str1 = "pale"
+    val str2 = "bake"
+
+    println(areMaxOneEditAway(str1, str2))
 
 
 }
 
-class StackWithSort<T : Comparable<T>> {
-    private val stack = Stack<T>()
-    private val stackSorted = Stack<T>()
+private fun areMaxOneEditAway(str1: String, str2: String): Boolean {
+    /*return if (str1.length == str2.length) {
+        checkReplace(str1, str2)
+    } else {
+        checkInsertOrDelete(str1, str2)
+    }*/
 
-    fun isEmpty() = stack.isEmpty()
-
-    fun peek() = stack.peek() as T
-
-    fun push(item: T) {
-        stack.push(item)
-
-        var i = 0
-        while (!stackSorted.isEmpty() && stackSorted.peek() > item) {
-            stack.push(stackSorted.pop())
-            i++
-        }
-        stackSorted.push(item)
-        repeat(i) {
-            stackSorted.push(stack.pop())
-        }
-    }
-
-    fun pop(): T {
-        if (isEmpty()) throw EmptyStackException()
-
-        val item = stack.pop()
-        var i = 0
-        while (!stackSorted.isEmpty() && stackSorted.peek() != item) {
-            stack.push(stackSorted.pop())
-            i++
-        }
-        stackSorted.pop()
-        repeat(i) {
-            stackSorted.push(stack.pop())
-        }
-
-        return item
-    }
-
-    fun sort() {
-        stack.clear()
-        while (!stackSorted.empty()) {
-            stack.push(stackSorted.pop())
-        }
-    }
-
+    return checkEdits(str1, str2)
 }
 
+private fun checkReplace(str1: String, str2: String): Boolean {
+    var diff = 0
+    for (i in str1.indices) {
+        if (str1[i] != str2[i]) {
+            diff++
+            if (diff > 1) return false
+        }
+    }
 
+    return true
+}
+
+private fun checkInsertOrDelete(mStr1: String, mStr2: String): Boolean {
+    if (abs(mStr1.length - mStr2.length) > 1) return false
+
+    val str1 = if (mStr1.length > mStr2.length) mStr1 else mStr2
+    val str2 = if (mStr1.length > mStr2.length) mStr2 else mStr1
+
+    var i = 0
+    var j = 0
+
+    while (j in str2.indices) {
+        if (str1[i] == str2[j]) {
+            j++
+        }
+        i++
+        if (i - j > 1) return false
+    }
+
+    return i - j <= 1
+}
+
+private fun checkEdits(mStr1: String, mStr2: String): Boolean {
+    val str1 = if (mStr1.length > mStr2.length) mStr1 else mStr2
+    val str2 = if (mStr1.length > mStr2.length) mStr2 else mStr1
+
+    var i = 0
+    var j = 0
+    var diff = 0
+
+    while (j in str2.indices) {
+        if (str1[i] != str2[j]) {
+            diff++
+            if (diff > 1) return false
+            if (str1.length == str2.length) j++
+        } else {
+            j++
+        }
+        i++
+    }
+
+    return true
+}

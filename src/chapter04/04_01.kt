@@ -1,40 +1,76 @@
 package chapter04
 
-import kotlin.math.max
-import kotlin.math.min
+import java.util.*
 
 /*
-    4.1 Implement a function to check if a tree is balanced. For the purposes of this question, a balanced tree is
-    defined to be a tree such that no two leaf nodes differ in distance from the root by more than one.
+    Route Between Nodes: Given a directed graph, design an algorithm to find out whether there is a
+    route between two nodes.
  */
 
-// this is equal to the height algorithm
-fun maxDepth(tree: Node?): Int {
-    if (tree == null) return 0
-
-    return 1 + max(maxDepth(tree.left), maxDepth(tree.right))
-}
-
-// modification of the height algorithm to return the min distance between root and any leaf
-fun minDepth(tree: Node?): Int {
-    if (tree == null) return 0
-
-    return 1 + min(minDepth(tree.left), minDepth(tree.right))
-}
-
-// test
 fun main() {
-    val tree = Node(7).apply {
-        left = Node(6).apply {
-            left = Node(4)
-            right = Node(3).apply {
-                left = Node(88)
+    val vertex1 = Vertex(1)
+    val vertex2 = Vertex(2)
+    val vertex3 = Vertex(3)
+    val vertex4 = Vertex(4)
+    val vertex5 = Vertex(5)
+    val vertex6 = Vertex(6)
+    val vertex7 = Vertex(7)
+    val vertex8 = Vertex(8)
+
+    val graph = Graph().apply {
+        vertices.add(
+            vertex1.apply {
+                neighbors.add(
+                    vertex2.apply {
+                        neighbors.add(
+                            vertex5.apply {
+                                neighbors.add(
+                                    vertex6
+                                )
+                            }
+                        )
+                    }
+                )
+                neighbors.add(
+                    vertex3.apply {
+                        neighbors.add(
+                            vertex5
+                        )
+                    }
+                )
+                neighbors.add(
+                    vertex4.apply {
+                        neighbors.add(
+                            vertex7.apply {
+                                neighbors.add(vertex8)
+                            }
+                        )
+                    }
+                )
             }
+        )
+    }
+
+    println(isThereARoute(vertex6, vertex6))
+
+}
+
+private fun isThereARoute(vertexA: Vertex, vertexB: Vertex): Boolean {
+    val queue = LinkedList<Vertex>()
+    queue.add(vertexA)
+
+    while (!queue.isEmpty()) {
+        val vertex = queue.poll().apply {
+            visited = true
         }
-        right = Node(5).apply {
-            right = Node(8)
+        if (vertex == vertexB) return true
+
+        for (neighbor in vertex.neighbors) {
+            if (!neighbor.visited) {
+                queue.add(neighbor)
+            }
         }
     }
 
-    println("balanced? ${maxDepth(tree) - minDepth(tree) <= 1}")
+    return false
 }
