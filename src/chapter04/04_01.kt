@@ -8,6 +8,7 @@ import java.util.*
  */
 
 fun main() {
+
     val vertex1 = Vertex(1)
     val vertex2 = Vertex(2)
     val vertex3 = Vertex(3)
