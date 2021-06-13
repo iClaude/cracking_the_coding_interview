@@ -6,7 +6,8 @@ package chapter04
  */
 
 fun main() {
-    val tree = createTree(intArrayOf(7, 8, 9), 0, 2)
+    val array = intArrayOf(7, 8, 9)
+    val tree = createTree(array, 0, array.lastIndex)
     println(tree)
 }
 
