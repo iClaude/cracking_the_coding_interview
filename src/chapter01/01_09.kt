@@ -6,15 +6,12 @@ package chapter01
 
 fun main() {
     val str1 = "waterbottle"
-    val str2 = "erbottlewat"
+    val str2 = "bottlewater"
     println("is $str2 a rotation of $str1? -> ${str2.isRotationOf(str1)}")
 }
 
-private fun String.isRotationOf(otherStr: String): Boolean {
-    if (this.length != otherStr.length) return false
+private fun String.isRotationOf(str: String) =
+    this.length == str.length && this.isSubstringOf("$str$str")
 
-    return otherStr.isSubstringOf("$this$this")
-}
-
-private fun String.isSubstringOf(otherStr: String) =
-        otherStr.contains(this)
+private fun String.isSubstringOf(str: String) =
+    str.indexOf(this) > -1
