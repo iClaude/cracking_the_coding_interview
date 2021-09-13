@@ -7,17 +7,16 @@ package chapter04
 
 fun main() {
     val array = intArrayOf(7, 8, 9)
-    val tree = createTree(array, 0, array.lastIndex)
+    val tree = createBST(array, 0, array.lastIndex)
     println(tree)
 }
 
-private fun createTree(array: IntArray, start: Int, end: Int): Node? {
+fun createBST(values: IntArray, start: Int, end: Int): Node? {
     if (start > end) return null
 
-    val pos = start + (end - start) / 2
-    return Node(array[pos]).apply {
-        left = createTree(array, start, pos - 1)
-        right = createTree(array, pos + 1, end)
+    val mid = (end + start) / 2
+    return Node(values[mid]).apply {
+        left = createBST(values, start, mid - 1)
+        right = createBST(values, mid + 1, end)
     }
-
 }

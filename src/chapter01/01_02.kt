@@ -22,10 +22,10 @@ package chapter01
 fun main() {
     val str1 = "sarnia9"
     val str2 = "9aisarn"
-    println("are the 2 strings anagrams? -> ${str1.isAnagramOf(str2)}")
+    println("are the 2 strings anagrams? -> ${str1.isPermutationOf(str2)}")
 }
 
-private fun String.isAnagramOf(otherStr: String): Boolean {
+private fun String.isPermutationOf(otherStr: String): Boolean {
     if (this.length != otherStr.length) return false
 
     val charsCount = Array(256) { 0 }
