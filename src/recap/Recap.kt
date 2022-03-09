@@ -1,48 +1,30 @@
 package recap
 
-import chapter04.Node
-import java.util.*
+fun String.isPermutationOf(other: String): Boolean {
+    if (length != other.length) return false
 
-/*
-    List of Depths: Given a binary tree, design an algorithm which creates a linked list of all the nodes
-    at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).
- */
+    val letters = Array(256) { 0 }
+    for (letter in this) {
+        letters[letter.code]++
+    }
+
+    for (letter in other) {
+        letters[letter.code]--
+        if (letters[letter.code] < 0) return false
+    }
+
+    return true
+}
+
+fun String.isPermutationOfWithSorting(other: String): Boolean {
+    if (length != other.length) return false
+
+    return toCharArray().sort() == other.toCharArray().sort()
+}
 
 fun main() {
-    val tree = Node(7)
-    val listOfDepths1 = createListOfDepthsBFS(tree)
-    createListOfDepthsDFS(tree, 0)
-
-    println("end")
-}
-
-fun createListOfDepthsBFS(root: Node): List<LinkedList<Node>> {
-    val result: MutableList<LinkedList<Node>> = mutableListOf()
-    result.add(LinkedList<Node>().apply { add(root) })
-
-    while (result[result.lastIndex].size > 0) { // check condition to exit
-        val list = LinkedList<Node>()
-        for (node in result[result.lastIndex]) {
-            node.left?.let { list.add(it) }
-            node.right?.let { list.add(it) }
-        }
-        result.add(list)
-    }
-
-    result.removeAt(result.lastIndex)
-    return result
-}
-
-val resultDFS: MutableList<LinkedList<Node>> = mutableListOf()
-
-fun createListOfDepthsDFS(node: Node?, level: Int) {
-    node ?: return
-
-    if (level !in resultDFS.indices) {
-        resultDFS.add(LinkedList())
-    }
-    resultDFS[level].add(node)
-
-    createListOfDepthsDFS(node.left, level + 1)
-    createListOfDepthsDFS(node.right, level + 1)
+    val str1 = "abc"
+    val str2 = "cbc"
+    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOf(str1)}")
+    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOfWithSorting(str1)}")
 }

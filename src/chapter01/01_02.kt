@@ -4,38 +4,31 @@ package chapter01
    Check Permutation: Given two strings, write a method to decide if one is a permutation of the
    other. */
 
-/* ALGORITHM
-   First of all, let's check that the two strings have equal length: if the lengths are not
-   equal they can't be anagrams.
-   Two strings are anagrams (permutations) if they have the same characters in the same amount,
-   just in a different order.
-   We keep an array of characters with 256 elements (ASCII characters), initially set to 0. This
-   array shows, for each character, how many times that particular character is present in our
-   strings.
-   We scan string1 and update the array. Then we scan string2: for each character we decrement the
-   amount corresponding to the character in our control array. If we obtain -1, string2 has more
-   occurrences of that particular character. Therefore the two strings can't be anagrams.
-   If we arrive at the end without errors that means that the two strings are actually anagrams:
-   the control array becomes 0.
-   Performance: O(n), where n is: string1 charaters + string2 characters. */
+fun String.isPermutationOf(other: String): Boolean {
+    if (length != other.length) return false
 
-fun main() {
-    val str1 = "sarnia9"
-    val str2 = "9aisarn"
-    println("are the 2 strings anagrams? -> ${str1.isPermutationOf(str2)}")
-}
-
-private fun String.isPermutationOf(otherStr: String): Boolean {
-    if (this.length != otherStr.length) return false
-
-    val charsCount = Array(256) { 0 }
-    for (char in this) {
-        charsCount[char.toInt()]++
+    val letters = Array(256) { 0 }
+    for (letter in this) {
+        letters[letter.code]++
     }
-    for (char in otherStr) {
-        val newValue = --charsCount[char.toInt()]
-        if (newValue < 0) return false
+
+    for (letter in other) {
+        letters[letter.code]--
+        if (letters[letter.code] < 0) return false
     }
 
     return true
+}
+
+fun String.isPermutationOfWithSorting(other: String): Boolean {
+    if (length != other.length) return false
+
+    return toCharArray().sort() == other.toCharArray().sort()
+}
+
+fun main() {
+    val str1 = "abc"
+    val str2 = "cbc"
+    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOf(str1)}")
+    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOfWithSorting(str1)}")
 }

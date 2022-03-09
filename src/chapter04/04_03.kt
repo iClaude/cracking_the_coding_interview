@@ -22,7 +22,7 @@ fun main() {
         }
     }
 
-    val listOfDepths1 = recap.createListOfDepthsBFS(tree)
+    val listOfDepths1 = createListOfDepthsBFS(tree)
     createListOfDepthsDFS(tree, 0)
     println("end")
 }
