@@ -1,30 +1,28 @@
 package recap
 
-fun String.isPermutationOf(other: String): Boolean {
-    if (length != other.length) return false
-
-    val letters = Array(256) { 0 }
-    for (letter in this) {
-        letters[letter.code]++
-    }
-
-    for (letter in other) {
-        letters[letter.code]--
-        if (letters[letter.code] < 0) return false
-    }
-
-    return true
-}
-
-fun String.isPermutationOfWithSorting(other: String): Boolean {
-    if (length != other.length) return false
-
-    return toCharArray().sort() == other.toCharArray().sort()
-}
-
 fun main() {
-    val str1 = "abc"
-    val str2 = "cbc"
-    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOf(str1)}")
-    println("is \"$str2\" a permutation of \"$str1\"? ${str2.isPermutationOfWithSorting(str1)}")
+    val myStr = "Iosonoleggenda                               "
+    println("urlified string = ${urlify(myStr, 14)}")
+}
+
+fun urlify(str: String, len: Int): String {
+    var spaces = 0
+    for (i in 0 until len) {
+        if (str[i] == ' ') spaces++
+    }
+    if (spaces == 0) return str
+
+    val strArray = str.toCharArray()
+    var pos = len + 2 * spaces - 1
+    for (i in len - 1 downTo 0) {
+        if (strArray[i] != ' ') {
+            strArray[pos--] = strArray[i]
+        } else {
+            strArray[pos--] = '0'
+            strArray[pos--] = '2'
+            strArray[pos--] = '%'
+        }
+    }
+
+    return strArray.joinToString("")
 }

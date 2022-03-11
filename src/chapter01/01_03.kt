@@ -9,31 +9,28 @@ package chapter01
     Output: "Mr%20John%20Smith" */
 
 fun main() {
-    val str = "Mr John Smith                             ".toCharArray()
-    val trueLen = 13
-    urlify(str, trueLen)
-    println(str.joinToString(""))
+    val str = "Mr John Smith                             "
+    println("urlified string = ${urlify(str, 13)}")
 }
 
-private fun urlify(str: CharArray, trueLen: Int) {
-    var index = getFinalIndex(str, trueLen)
-
-    for (i in trueLen - 1 downTo 0) {
-        val char = str[i]
-        if (char == ' ') {
-            str[index--] = '0'
-            str[index--] = '2'
-            str[index--] = '%'
-        } else {
-            str[index--] = char
-        }
-    }
-}
-
-private fun getFinalIndex(str: CharArray, trueLen: Int): Int {
+fun urlify(str: String, len: Int): String {
     var spaces = 0
-    for (i in 0 until trueLen) {
+    for (i in 0 until len) {
         if (str[i] == ' ') spaces++
     }
-    return trueLen - 1 + spaces * 2
+    if (spaces == 0) return str
+
+    val strArray = str.toCharArray()
+    var pos = len + 2 * spaces - 1
+    for (i in len - 1 downTo 0) {
+        if (strArray[i] != ' ') {
+            strArray[pos--] = strArray[i]
+        } else {
+            strArray[pos--] = '0'
+            strArray[pos--] = '2'
+            strArray[pos--] = '%'
+        }
+    }
+
+    return strArray.joinToString("")
 }
