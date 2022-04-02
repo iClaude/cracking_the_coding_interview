@@ -1,77 +1,28 @@
 package recap
 
-import kotlin.math.abs
-import kotlin.math.log10
-
 fun main() {
-    val str = "aaabbcccccdd"
-    println("compressed string = ${compressString(str)}")
-    println("compressed string = ${compressString2(str)}")
-
-}
-
-private fun compressString(str: String): String {
-    val sb = StringBuilder(str[0].toString())
-
-    var start = 0
-    var i = 1
-    while (i in str.indices) {
-        if (str[i] != str[start]) {
-            sb.append(i - start)
-            sb.append(str[i])
-            start = i
+    val n = 6
+    val matrix = Array(n) { i ->
+        Array(n) { j ->
+            i * n + j + 1
         }
-        i++
     }
-    sb.append(i - start)
-
-    return if (sb.length < str.length) {
-        sb.toString()
-    } else {
-        str
-    }
+    println("start")
+    rotateMatrix(matrix)
+    println("end")
 }
 
-private fun compressString2(str: String): String {
-    val compressedLength = computeCompressedLength(str)
-    if (compressedLength >= str.length) return str
+private fun rotateMatrix(matrix: Array<Array<Int>>) {
+    if (matrix.size <= 1 || matrix.size != matrix[0].size) return
 
-    val sb = StringBuilder(compressedLength).also {
-        it.append(str[0])
-    }
-    var start = 0
-    var i = 1
-    while (i in str.indices) {
-        if (str[i] != str[start]) {
-            sb.append(i - start)
-            sb.append(str[i])
-            start = i
+    val lastIndex = matrix.lastIndex
+    for (i in 0 until matrix.size / 2) {
+        for (j in i until lastIndex - i) {
+            val tmp = matrix[i][j]
+            matrix[i][j] = matrix[lastIndex - j][i]
+            matrix[lastIndex - j][i] = matrix[lastIndex - i][lastIndex - j]
+            matrix[lastIndex - i][lastIndex - j] = matrix[j][lastIndex - i]
+            matrix[j][lastIndex - i] = tmp
         }
-        i++
     }
-    sb.append(i - start)
-
-    return sb.toString()
-}
-
-private fun computeCompressedLength(str: String): Int {
-    var len = 0
-
-    var start = 0
-    var i = 1
-    while (i in str.indices) {
-        if (str[i] != str[start]) {
-            len += 1 + (i - start).length()
-            start = i
-        }
-        i++
-    }
-    len += 1 + (i - start).length()
-
-    return len
-}
-
-fun Int.length() = when (this) {
-    0 -> 1
-    else -> log10(abs(toDouble())).toInt() + 1
 }
