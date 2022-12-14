@@ -1,7 +1,6 @@
 package chapter01
 
-/* PROBLEM
-   Check Permutation: Given two strings, write a method to decide if one is a permutation of the
+/* Check Permutation: Given two strings, write a method to decide if one is a permutation of the
    other. */
 
 fun String.isPermutationOf(other: String): Boolean {

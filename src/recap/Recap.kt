@@ -1,66 +1,35 @@
 package recap
 
 fun main() {
-    val mStr = "iclaude"
-    println(hasUniqueCharacters(mStr))
-    println(hasUniqueCharacters2(mStr))
-    println(hasUniqueCharacters3(mStr))
-    println(hasUniqueCharacters4(mStr))
+    val str1 = "alfa"
+    val str2 = "abba"
+    println(isPermutationWithArray(str1, str2))
+    println(isPermutationWithSorting(str1, str2))
 }
 
-private fun hasUniqueCharacters(str: String): Boolean {
-    if (str.length > 256) return false
+private fun isPermutationWithArray(str1: String, str2: String): Boolean {
+    if (str1.length != str2.length) return false
 
-    val chars = Array(256) { false }
+    val chars = Array(256) { 0 }
 
-    for (char in str) {
-        if (chars[char.code]) {
-            return false
-        }
-        chars[char.code] = true
+    for (char in str1) {
+        chars[char.code]++
+    }
+
+    for (char in str2) {
+        if (chars[char.code] == 0) return false
+        chars[char.code]--
     }
 
     return true
 }
 
-private fun hasUniqueCharacters2(str: String): Boolean {
-    if (str.length > 256) return false
+private fun isPermutationWithSorting(str1: String, str2: String): Boolean {
+    if (str1.length != str2.length) return false
 
-    val chars = hashMapOf<Char, Boolean>()
+    val str1Sorted = str1.toCharArray().sorted().joinToString()
+    val str2Sorted = str2.toCharArray().sorted().joinToString()
 
-    for (char in str) {
-        if (chars[char] == true) {
-            return false
-        }
-        chars[char] = true
-    }
-
-    return true
+    return str1Sorted == str2Sorted
 }
 
-private fun hasUniqueCharacters3(str: String): Boolean {
-    if (str.length > 256) return false
-
-    val strSorted = str.toCharArray().sorted()
-    for (i in 0..strSorted.size - 2) {
-        if (strSorted[i] == strSorted[i + 1]) {
-            return false
-        }
-    }
-
-    return true
-}
-
-private fun hasUniqueCharacters4(str: String): Boolean {
-    var chars: Int = 0
-
-    for (char in str) {
-        val pos = char.code - 97
-        if ((1 shl (pos) and chars) > 0) {
-            return false
-        }
-        chars = 1 shl (pos) or chars
-    }
-
-    return true
-}
