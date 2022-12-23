@@ -1,66 +1,69 @@
 package recap
 
+import kotlin.math.abs
+
 fun main() {
-    val str = "abbac"
-    println(isPalindromePermutationWithArray(str))
-    println(isPalindromePermutationWithArray2(str))
-    println(isPalindromePermutationWithBitVector(str))
+    val str1 = "pale"
+    val str2 = "bake"
+    println(areOneEditAway(str1, str2))
+    println(areOneEditAwaySinglePass(str1, str2))
 }
 
-private fun isPalindromePermutationWithArray(str: String): Boolean {
-    val chars = Array(26) { 0 }
-    for (char in str) {
-        if (char != ' ') {
-            chars[char.lowercase()[0].code - 97] += 1
-        }
+private fun areOneEditAway(str1: String, str2: String): Boolean =
+    if (str1.length == str2.length) {
+        areOneEditAwayCheckReplace(str1, str2)
+    } else {
+        areOneEditAwayCheckInsertAndDelete(str1, str2)
     }
 
-    var odds = 0
-    for (occurrences in chars) {
-        if (occurrences % 2 == 0) continue
-        else {
-            odds++
-            if (odds > 1) return false
-        }
+private fun areOneEditAwayCheckReplace(str1: String, str2: String): Boolean {
+    var diff = 0
+    for (i in str1.indices) {
+        if (str1[i] != str2[i]) diff++
+        if (diff > 1) return false
     }
 
     return true
 }
 
-private fun isPalindromePermutationWithArray2(str: String): Boolean {
-    val chars = Array(26) { 0 }
-    var odds = 0
-    for (char in str) {
-        if (char != ' ') {
-            chars[char.lowercase()[0].code - 97] += 1
-            if (chars[char.lowercase()[0].code - 97] % 2 != 0) {
-                odds++
-            } else {
-                odds--
-            }
+private fun areOneEditAwayCheckInsertAndDelete(str1: String, str2: String): Boolean {
+    if (abs(str1.length - str2.length) > 1) return false
+
+    val mStr1 = if (str1.length > str2.length) str1 else str2
+    val mStr2 = if (str1.length > str2.length) str2 else str1
+
+    var i1 = 0
+    var i2 = 0
+    while ((i1 - i2) < 2 && i2 in mStr2.indices) {
+        if (mStr1[i1] == mStr2[i2]) {
+            i2++
         }
+        i1++
     }
 
-    return odds <= 1
+    return (i1 - i2) < 2
 }
 
-private fun isPalindromePermutationWithBitVector(str: String): Boolean {
-    var chars = 0 // bit vector (32 bit)
-    for (char in str) {
-        if (char == ' ') continue
-        val pos = char.lowercase()[0].code - 97
-        chars = if (chars and 1.shl(pos) == 0) {
-            chars or 1.shl(pos)
+private fun areOneEditAwaySinglePass(str1: String, str2: String): Boolean {
+    if (abs(str1.length - str2.length) > 1) return false
+
+    val mStr1 = if (str1.length > str2.length) str1 else str2
+    val mStr2 = if (str1.length > str2.length) str2 else str1
+
+    var i1 = 0
+    var i2 = 0
+    var diff = 0
+    while ((i1 - i2) < 2 && i2 in mStr2.indices) {
+        if (mStr1[i1] == mStr2[i2]) {
+            i2++
         } else {
-            chars and (1.shl(pos).inv())
+            diff++
+            if (diff > 1) return false
+            if (mStr1.length == mStr2.length) i2++
         }
+        i1++
     }
 
-    var occurrences = 0
-    for (i in 0..25) {
-        if (chars and 1.shl(i) > 0) occurrences++
-        if (occurrences > 1) return false
-    }
+    return (i1 - i2) < 2
 
-    return true
 }
