@@ -65,5 +65,4 @@ private fun areOneEditAwaySinglePass(str1: String, str2: String): Boolean {
     }
 
     return (i1 - i2) < 2
-
 }
