@@ -1,68 +1,81 @@
 package recap
 
-import kotlin.math.abs
-
 fun main() {
-    val str1 = "pale"
-    val str2 = "bake"
-    println(areOneEditAway(str1, str2))
-    println(areOneEditAwaySinglePass(str1, str2))
+    val str = "aaabbc"
+    println(compressString(str))
+    println(compressStringWithLengthCheck(str))
+    println(getCompressedLength(str))
 }
 
-private fun areOneEditAway(str1: String, str2: String): Boolean =
-    if (str1.length == str2.length) {
-        areOneEditAwayCheckReplace(str1, str2)
-    } else {
-        areOneEditAwayCheckInsertAndDelete(str1, str2)
-    }
+private fun compressString(str: String): String {
+    if (str.length < 3) return str
 
-private fun areOneEditAwayCheckReplace(str1: String, str2: String): Boolean {
-    var diff = 0
-    for (i in str1.indices) {
-        if (str1[i] != str2[i]) diff++
-        if (diff > 1) return false
-    }
-
-    return true
-}
-
-private fun areOneEditAwayCheckInsertAndDelete(str1: String, str2: String): Boolean {
-    if (abs(str1.length - str2.length) > 1) return false
-
-    val mStr1 = if (str1.length > str2.length) str1 else str2
-    val mStr2 = if (str1.length > str2.length) str2 else str1
-
-    var i1 = 0
-    var i2 = 0
-    while ((i1 - i2) < 2 && i2 in mStr2.indices) {
-        if (mStr1[i1] == mStr2[i2]) {
-            i2++
-        }
-        i1++
-    }
-
-    return (i1 - i2) < 2
-}
-
-private fun areOneEditAwaySinglePass(str1: String, str2: String): Boolean {
-    if (abs(str1.length - str2.length) > 1) return false
-
-    val mStr1 = if (str1.length > str2.length) str1 else str2
-    val mStr2 = if (str1.length > str2.length) str2 else str1
-
-    var i1 = 0
-    var i2 = 0
-    var diff = 0
-    while ((i1 - i2) < 2 && i2 in mStr2.indices) {
-        if (mStr1[i1] == mStr2[i2]) {
-            i2++
+    val sb = StringBuilder()
+    var letter = str[0]
+    var count = 1
+    sb.append(letter)
+    for (i in 1..str.lastIndex) {
+        if (str[i] == letter) {
+            count++
         } else {
-            diff++
-            if (diff > 1) return false
-            if (mStr1.length == mStr2.length) i2++
+            sb.append(count)
+            letter = str[i]
+            sb.append(letter)
+            count = 1
         }
-        i1++
     }
+    sb.append(count)
 
-    return (i1 - i2) < 2
+    return if (sb.length < str.length) {
+        sb.toString()
+    } else {
+        str
+    }
+}
+
+private fun compressStringWithLengthCheck(str: String): String {
+    val compressedLength = getCompressedLength(str)
+    if (compressedLength >= str.length) return str
+
+    val sb = StringBuilder(compressedLength)
+    var letter = str[0]
+    var count = 1
+    sb.append(letter)
+    for (i in 1..str.lastIndex) {
+        if (str[i] == letter) {
+            count++
+        } else {
+            sb.append(count)
+            letter = str[i]
+            sb.append(letter)
+            count = 1
+        }
+    }
+    sb.append(count)
+
+    return if (sb.length < str.length) {
+        sb.toString()
+    } else {
+        str
+    }
+}
+
+private fun getCompressedLength(str: String): Int {
+    if (str.length < 3) return str.length
+
+    var letter = str[0]
+    var count = 1
+    var compressedLength = 0
+    for (i in 1..str.lastIndex) {
+        if (str[i] == letter) {
+            count++
+        } else {
+            compressedLength += 1 + count.toString().length
+            letter = str[i]
+            count = 1
+        }
+    }
+    compressedLength += 2
+
+    return compressedLength
 }
